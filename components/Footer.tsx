@@ -6,7 +6,9 @@ import React from "react";
 const Footer = () => {
   return (
     <footer className="w-full">
-      <Link href={``}>Footer</Link>
+      <Link href={`/`} className="font-bold">
+        Footer
+      </Link>
     </footer>
   );
 };
