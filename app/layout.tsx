@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Nunito_Sans } from "next/font/google";
+import Link from "next/link";
 import "./globals.css";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 const inter = Nunito_Sans({
   weight: ["200", "300", "400", "600", "700", "800", "900"],
@@ -22,7 +25,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+        <Navbar />
+        {children}
+        <Footer />
+      </body>
     </html>
   );
 }
