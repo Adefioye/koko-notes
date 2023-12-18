@@ -13,7 +13,7 @@ export default async function KodyProfileRoute({
   console.log("Params: ", params.userName);
   console.log(user);
 
-  if (!(user.name || user.username)) {
+  if (!(user.name && user.username)) {
     notFound();
   }
 
