@@ -24,10 +24,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
+    <html lang="en" className="h-full overflow-x-hidden">
+      <body
+        className={`${inter.className} flex h-full flex-col justify-between bg-background text-foreground`}
+      >
         <Navbar />
-        {children}
+        <div className="flex-1">{children}</div>
         <Footer />
       </body>
     </html>

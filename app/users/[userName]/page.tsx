@@ -5,11 +5,14 @@ export default function KodyProfileRoute({
 }: {
   params: { userName: string };
 }) {
+  // TODO Grab data from database and display name/username property
+
+  
   return (
-    <div className="flex min-h-screen justify-between pb-12 border-8 border-green-500">
-      <h1 className="text-2xl font-bold">{params.userName}</h1>
-      <Link href="/users/kody/notes" className="font-bold text-red-500">
-        Go to notes page
+    <div className="container mb-48 mt-36">
+      <h1 className="text-h1">user or username from data</h1>
+      <Link href={`/users/${params.userName}/notes`} className="underline">
+        Notes
       </Link>
     </div>
   );
