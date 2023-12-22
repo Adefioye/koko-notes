@@ -1,5 +1,3 @@
-"use client";
-
 import Link from "next/link";
 
 const Navbar = () => {
@@ -10,7 +8,7 @@ const Navbar = () => {
           <div className="font-light">epic</div>
           <div className="font-bold">notes</div>
         </Link>
-        <Link className="underline" href="users/kody/notes/d27a197e">
+        <Link className="underline" href="/users/kody/notes/d27a197e">
           Kody&apos;s Notes
         </Link>
       </nav>

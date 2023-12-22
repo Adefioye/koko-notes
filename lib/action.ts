@@ -1,8 +1,4 @@
-"use server";
-
 import { db } from "@/utils/db.server";
-import { invariantResponse } from "@/utils/misc";
-import { json } from "stream/consumers";
 
 export async function getUserName(userName: string) {
   try {
@@ -30,6 +26,7 @@ export async function getOwnerAndNotes(userName: string) {
         },
       },
     });
+    
     const notes = db.note
       .findMany({
         where: {
@@ -42,6 +39,24 @@ export async function getOwnerAndNotes(userName: string) {
       })
       .map(({ id, title }) => ({ id, title }));
     return { owner, notes };
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function getNote(noteId: string) {
+  try {
+    const note = db.note.findFirst({
+      where: {
+        id: {
+          equals: noteId,
+        },
+      },
+    });
+    return {
+      note: { title: note?.title, content: note?.content },
+    };
   } catch (error) {
     console.log(error);
     throw error;
