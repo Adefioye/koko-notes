@@ -1,7 +1,7 @@
 import { cn } from "@/utils/misc";
 import Link from "next/link";
 import { getOwnerAndNotes } from "@/lib/action";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 
 type Props = {
   params: { userName: string };
@@ -14,8 +14,9 @@ const NoteSidebar = async ({ params, pathname }: Props) => {
   const navLinkDefaultClassName =
     "line-clamp-2 block rounded-l-full py-2 pl-8 pr-6 text-base lg:text-xl";
 
+  console.log(owner, notes);
   if (!owner) {
-    notFound();
+    redirect("/")
   }
 
   console.log("Pathname: ", pathname);
