@@ -1,22 +1,24 @@
+"use client";
+
 import { cn } from "@/utils/misc";
+import { Note, User } from "@/utils/types";
 import Link from "next/link";
-import { getOwnerAndNotes } from "@/lib/action";
-import { notFound, redirect } from "next/navigation";
+
+import { redirect, usePathname } from "next/navigation";
 
 type Props = {
-  params: { userName: string };
-  pathname: string;
+  owner: User;
+  notes: Note[];
 };
 
-const NoteSidebar = async ({ params, pathname }: Props) => {
-  const { owner, notes } = await getOwnerAndNotes(params.userName);
+const NoteSidebar = ({ owner, notes }: Props) => {
+  const pathname = usePathname();
   const ownerDisplayName = owner?.username ?? owner?.name;
   const navLinkDefaultClassName =
     "line-clamp-2 block rounded-l-full py-2 pl-8 pr-6 text-base lg:text-xl";
 
-  console.log(owner, notes);
   if (!owner) {
-    redirect("/")
+    redirect("/");
   }
 
   console.log("Pathname: ", pathname);

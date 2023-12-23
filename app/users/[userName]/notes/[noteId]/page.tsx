@@ -6,7 +6,8 @@ export default async function SomeNoteId({
 }: {
   params: { noteId: string };
 }) {
-  const { note } = await getNote(params.noteId);
+  const data = await getNote(params.noteId);
+  const { note } = await data.json();
 
   if (!(note.title && note.content)) {
     notFound();

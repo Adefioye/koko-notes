@@ -7,11 +7,8 @@ export default async function KodyProfileRoute({
 }: {
   params: { userName: string };
 }) {
-  // TODO Grab data from database and display name/username property
-  const { user } = await getUserName(params.userName);
-
-  console.log("Params: ", params.userName);
-  console.log(user);
+  const data = await getUserName(params.userName);
+  const { user } = await data.json();
 
   if (!(user.name && user.username)) {
     notFound();

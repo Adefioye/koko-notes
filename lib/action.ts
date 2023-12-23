@@ -1,4 +1,7 @@
+import "server-only";
+
 import { db } from "@/utils/db.server";
+import { NextResponse } from "next/server";
 
 export async function getUserName(userName: string) {
   try {
@@ -10,7 +13,9 @@ export async function getUserName(userName: string) {
       },
     });
 
-    return { user: { name: user?.name, username: user?.username } };
+    return NextResponse.json({
+      user: { name: user?.name, username: user?.username },
+    });
   } catch (error) {
     console.log(error);
     throw error;
@@ -26,7 +31,7 @@ export async function getOwnerAndNotes(userName: string) {
         },
       },
     });
-    
+
     const notes = db.note
       .findMany({
         where: {
@@ -38,7 +43,7 @@ export async function getOwnerAndNotes(userName: string) {
         },
       })
       .map(({ id, title }) => ({ id, title }));
-    return { owner, notes };
+    return NextResponse.json({ owner, notes });
   } catch (error) {
     console.log(error);
     throw error;
@@ -54,9 +59,9 @@ export async function getNote(noteId: string) {
         },
       },
     });
-    return {
+    return NextResponse.json({
       note: { title: note?.title, content: note?.content },
-    };
+    });
   } catch (error) {
     console.log(error);
     throw error;
