@@ -4,7 +4,7 @@ import { cn } from "@/utils/misc";
 import { Note, User } from "@/utils/types";
 import Link from "next/link";
 
-import { redirect, usePathname } from "next/navigation";
+import { notFound, usePathname } from "next/navigation";
 
 type Props = {
   owner: User;
@@ -18,7 +18,7 @@ const NoteSidebar = ({ owner, notes }: Props) => {
     "line-clamp-2 block rounded-l-full py-2 pl-8 pr-6 text-base lg:text-xl";
 
   if (!owner) {
-    redirect("/");
+    notFound();
   }
 
   console.log("Pathname: ", pathname);

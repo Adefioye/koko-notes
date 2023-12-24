@@ -1,7 +1,9 @@
-import "server-only";
+"use server";
 
 import { db } from "@/utils/db.server";
 import { NextResponse } from "next/server";
+import { redirect } from "next/navigation";
+import { UserNameAndNotedId } from "@/components/notes/EditForm";
 
 export async function getUserName(userName: string) {
   try {
@@ -67,3 +69,38 @@ export async function getNote(noteId: string) {
     throw error;
   }
 }
+
+const updateNoteInDB = (noteId: string, title: string, content: string) => {
+  try {
+    const result = db.note.update({
+      where: { id: { equals: noteId } },
+      data: { title, content },
+    });
+
+    return result;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+type UpdateNote = (
+  prevState: UserNameAndNotedId,
+  formData: FormData
+) => string | Promise<string>;
+
+export const updateNote = async (
+  prevState: UserNameAndNotedId,
+  formData: FormData
+) => {
+  const { noteId, userName } = prevState;
+  const title = formData.get("title") ?? "";
+  const content = formData.get("content") ?? "";
+  //@ts-expect-error, We will fix this later
+  const result = updateNoteInDB(noteId, title, content);
+  if (result) {
+    return redirect(`/users/${userName}/notes/${noteId}`);
+  } else {
+    return "Failed";
+  }
+};

@@ -1,4 +1,4 @@
-import NoteSideBarAndContent from "@/components/NoteSideBarAndContent";
+import NoteSideBarAndContent from "@/components/notes/NoteSideBarAndContent";
 
 type Props = {
   children: React.ReactNode;
