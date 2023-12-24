@@ -77,6 +77,7 @@ const updateNoteInDB = (noteId: string, title: string, content: string) => {
       data: { title, content },
     });
 
+    console.log(result);
     return result;
   } catch (error) {
     console.log(error);
@@ -89,14 +90,23 @@ type UpdateNote = (
   formData: FormData
 ) => string | Promise<string>;
 
-export const updateNote = async (
+export const updateNote: UpdateNote = async (
   prevState: UserNameAndNotedId,
   formData: FormData
 ) => {
   const { noteId, userName } = prevState;
-  const title = formData.get("title") ?? "";
-  const content = formData.get("content") ?? "";
-  //@ts-expect-error, We will fix this later
+  const title = formData.get("title") as string;
+  const content = formData.get("content") as string;
+
+  if (!title) {
+    throw new Response("Title must not be null", { status: 400 });
+  }
+
+  if (!content) {
+    throw new Response("Content must not be null", { status: 400 });
+  }
+
+  console.log(title, content);
   const result = updateNoteInDB(noteId, title, content);
   if (result) {
     return redirect(`/users/${userName}/notes/${noteId}`);

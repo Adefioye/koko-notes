@@ -31,7 +31,7 @@ const EditForm = ({ initialState, note }: Props) => {
         <div>
           {/* 🦉 NOTE: this is not an accessible label, we'll get to that in the accessibility exercises */}
           <Label>Title</Label>
-          <Input name="title" defaultValue={note.title} />
+          <Input name="itle" defaultValue={note.title} />
         </div>
         <div>
           {/* 🦉 NOTE: this is not an accessible label, we'll get to that in the accessibility exercises */}

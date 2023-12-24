@@ -2,4 +2,4 @@
 
 ###### PROBLEMS YET TO BE SOLVED
 
-- Note left bar item not `highlighted`
+- Fix issue relating to submitting empty `title or content` from the frontend
