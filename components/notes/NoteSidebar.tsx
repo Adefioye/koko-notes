@@ -23,7 +23,7 @@ const NoteSidebar = ({ owner, notes }: Props) => {
 
   console.log("Pathname: ", pathname);
   const isActive = (noteId: string) => {
-    return pathname === `/users/${ownerDisplayName}/notes/${noteId}`;
+    return pathname.includes(`/users/${ownerDisplayName}/notes/${noteId}`);
   };
 
   return (
