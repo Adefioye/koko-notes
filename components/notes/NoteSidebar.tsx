@@ -46,6 +46,7 @@ const NoteSidebar = ({ owner, notes }: Props) => {
                   navLinkDefaultClassName,
                   isActive(note.id) && "bg-accent"
                 )}
+                scroll={false}
               >
                 {note.title}
               </Link>
