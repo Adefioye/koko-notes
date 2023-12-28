@@ -4,6 +4,7 @@ import { db } from "@/utils/db.server";
 import { NextResponse } from "next/server";
 import { redirect } from "next/navigation";
 import { UserNameAndNotedId } from "@/components/notes/EditForm";
+import { invariantResponse } from "@/utils/misc";
 
 export async function getUserName(userName: string) {
   try {
@@ -14,6 +15,8 @@ export async function getUserName(userName: string) {
         },
       },
     });
+
+    invariantResponse(user, "User not found", { status: 404 });
 
     return NextResponse.json({
       user: { name: user?.name, username: user?.username },
@@ -45,6 +48,7 @@ export async function getOwnerAndNotes(userName: string) {
         },
       })
       .map(({ id, title }) => ({ id, title }));
+
     return NextResponse.json({ owner, notes });
   } catch (error) {
     console.log(error);
