@@ -114,3 +114,21 @@ export const updateNote: UpdateNote = async (
     return "Failed";
   }
 };
+
+export async function deleteNote(prevState: UserNameAndNotedId, formData: FormData) {
+  const { userName, noteId } = prevState;
+  try {
+    db.note.delete({
+      where: {
+        id: {
+          equals: noteId,
+        },
+      },
+    });
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+
+  redirect(`/users/${userName}/notes`);
+}
