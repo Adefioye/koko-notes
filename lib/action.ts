@@ -115,19 +115,36 @@ export const updateNote: UpdateNote = async (
   }
 };
 
-export async function deleteNote(prevState: UserNameAndNotedId, formData: FormData) {
-  const { userName, noteId } = prevState;
+const deleteNoteInDB = (noteId: string) => {
   try {
-    db.note.delete({
+    const result = db.note.delete({
       where: {
         id: {
           equals: noteId,
         },
       },
     });
+    return result;
   } catch (error) {
     console.log(error);
     throw error;
+  }
+};
+
+export async function deleteNote(
+  prevState: UserNameAndNotedId,
+  formData: FormData
+) {
+  const { userName, noteId } = prevState;
+  const intent = formData.get("intent");
+  console.log("Intent: ", intent);
+  switch (intent) {
+    case "delete":
+      deleteNoteInDB(noteId);
+      break;
+
+    default:
+      throw new Response("Bad Request", { status: 400 });
   }
 
   redirect(`/users/${userName}/notes`);

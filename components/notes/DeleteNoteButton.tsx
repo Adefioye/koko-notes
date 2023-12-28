@@ -12,7 +12,7 @@ const DeleteNoteButton = ({ noteId, userName }: UserNameAndNotedId) => {
   const [_, formAction] = useFormState(deleteNote, initialState);
   return (
     <form action={formAction}>
-      <Button type="submit" variant="destructive">
+      <Button type="submit" variant="destructive" name="intent" value="">
         Delete
       </Button>
     </form>
