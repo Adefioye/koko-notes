@@ -9,7 +9,10 @@ type Props = {
 
 export async function generateMetadata({ params }: Props) {
   return {
-    title: `${params.userName} profile | Koko notes`,
+    title: `${params.userName ?? "Profile"} | Koko notes`,
+    description: `Profile of ${
+      params.userName ?? "Unknown person"
+    } in koko notes`,
   };
 }
 

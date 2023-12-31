@@ -6,12 +6,12 @@ import Link from "next/link";
 
 import { notFound, usePathname } from "next/navigation";
 
-type Props = {
+export type OwnerAndNotes = {
   owner: User;
   notes: Note[];
 };
 
-const NoteSidebar = ({ owner, notes }: Props) => {
+const NoteSidebar = ({ owner, notes }: OwnerAndNotes) => {
   const pathname = usePathname();
   const ownerDisplayName = owner?.username ?? owner?.name;
   const navLinkDefaultClassName =

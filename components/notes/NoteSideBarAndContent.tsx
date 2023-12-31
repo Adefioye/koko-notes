@@ -1,5 +1,5 @@
 import React from "react";
-import NoteSidebar from "./NoteSidebar";
+import NoteSidebar, { OwnerAndNotes } from "./NoteSidebar";
 import NoteContent from "./NoteContent";
 import { getOwnerAndNotes } from "@/lib/action";
 
@@ -10,8 +10,8 @@ type Props = {
 
 const NoteSideBarAndContent = async ({ children, params }: Props) => {
   const data = await getOwnerAndNotes(params.userName);
-  const { owner, notes } = await data.json();
-
+  const { owner, notes }: OwnerAndNotes = await data.json();
+  
   return (
     <div className="grid w-full grid-cols-4 bg-muted pl-2 md:container md:mx-2 md:rounded-3xl md:pr-0">
       <NoteSidebar owner={owner} notes={notes} />

@@ -1,4 +1,3 @@
-import StatusButton from "@/components/SubmitButton";
 import DeleteNoteButton from "@/components/notes/DeleteNoteButton";
 import { Button } from "@/components/ui/button";
 import { getNote } from "@/lib/action";

@@ -1,4 +1,6 @@
 import NoteSideBarAndContent from "@/components/notes/NoteSideBarAndContent";
+import { OwnerAndNotes } from "@/components/notes/NoteSidebar";
+import { getOwnerAndNotes } from "@/lib/action";
 
 type Props = {
   children: React.ReactNode;
@@ -6,6 +8,20 @@ type Props = {
     userName: string;
   };
 };
+
+export async function generateMetadata({ params }: Props) {
+  const data = await getOwnerAndNotes(params.userName);
+  const res: OwnerAndNotes = await data.json();
+  const numOfNotes = res.notes.length;
+  const displayName = params.userName;
+  const notesText = numOfNotes === 0 ? "note" : "notes";
+  return {
+    title: `${displayName}'s note | Koko notes`,
+    description: `Checkout ${
+      displayName + "'s" ?? "Unknown person"
+    } ${numOfNotes} ${notesText} on koko notes`,
+  };
+}
 
 export default function NotesLayout({ children, params }: Props) {
   return (
