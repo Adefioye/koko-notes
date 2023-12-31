@@ -1,12 +1,19 @@
 import Link from "next/link";
 import { getUserName } from "@/lib/action";
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 
-export default async function KodyProfileRoute({
-  params,
-}: {
+type Props = {
   params: { userName: string };
-}) {
+};
+
+export async function generateMetadata({ params }: Props) {
+  return {
+    title: `${params.userName} profile | Koko notes`,
+  };
+}
+
+export default async function KodyProfileRoute({ params }: Props) {
   const data = await getUserName(params.userName);
   const { user } = await data.json();
 
