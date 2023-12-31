@@ -7,6 +7,8 @@ import { useFormState } from "react-dom";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
+import SubmitButton from "../SubmitButton";
+import StatusButton from "../SubmitButton";
 
 export type UserNameAndNotedId = {
   userName: string;
@@ -43,7 +45,7 @@ const EditForm = ({ initialState, note }: Props) => {
         <Button variant="destructive" type="reset">
           Reset
         </Button>
-        <Button type="submit">Submit</Button>
+        <StatusButton>Submit</StatusButton>
       </div>
     </form>
   );

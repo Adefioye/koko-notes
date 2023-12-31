@@ -110,7 +110,6 @@ export const updateNote: UpdateNote = async (
     throw new Response("Content must not be null", { status: 400 });
   }
 
-  console.log(title, content);
   const result = updateNoteInDB(noteId, title, content);
   if (result) {
     return redirect(`/users/${userName}/notes/${noteId}`);

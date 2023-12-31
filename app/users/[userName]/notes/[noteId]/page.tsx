@@ -1,3 +1,4 @@
+import StatusButton from "@/components/SubmitButton";
 import DeleteNoteButton from "@/components/notes/DeleteNoteButton";
 import { Button } from "@/components/ui/button";
 import { getNote } from "@/lib/action";
@@ -9,8 +10,7 @@ export default async function SomeNoteId({
 }: {
   params: { userName: string; noteId: string };
 }) {
-
-  const {userName, noteId} = params;
+  const { userName, noteId } = params;
   const data = await getNote(noteId);
   const { note } = await data.json();
 
@@ -19,7 +19,7 @@ export default async function SomeNoteId({
   }
 
   return (
-    <div className="absolute inset-0 flex flex-col px-10">
+    <form className="absolute inset-0 flex flex-col px-10">
       <h2 className="mb-2 pt-12 text-h2 lg:mb-6">{note.title}</h2>
       <div className="overflow-y-auto pb-24">
         <p className="whitespace-break-spaces text-sm md:text-lg">
@@ -32,6 +32,6 @@ export default async function SomeNoteId({
           <Link href={`/users/${userName}/notes/${noteId}/edit`}>Edit</Link>
         </Button>
       </div>
-    </div>
+    </form>
   );
 }
