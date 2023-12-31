@@ -1,14 +1,31 @@
 import DeleteNoteButton from "@/components/notes/DeleteNoteButton";
+import { OwnerAndNotes } from "@/components/notes/NoteSidebar";
 import { Button } from "@/components/ui/button";
 import { getNote } from "@/lib/action";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-export default async function SomeNoteId({
-  params,
-}: {
+type Props = {
   params: { userName: string; noteId: string };
-}) {
+};
+
+export async function generateMetadata({ params }: Props) {
+  const displayName = params.userName;
+  const data = await getNote(params.noteId);
+  const { note } = await data.json();
+  const noteTitle = note?.title ?? "Note";
+  const noteContent = (note?.content as string) ?? "No content";
+  const noteContentSummary =
+    noteContent && noteContent.length > 100
+      ? noteContent.slice(0, 97) + "..."
+      : noteContent;
+  return {
+    title: `${noteTitle} | ${displayName}'s note | Koko notes`,
+    description: noteContentSummary,
+  };
+}
+
+export default async function SomeNoteId({ params }: Props) {
   const { userName, noteId } = params;
   const data = await getNote(noteId);
   const { note } = await data.json();
