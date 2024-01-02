@@ -1,5 +1,4 @@
 import DeleteNoteButton from "@/components/notes/DeleteNoteButton";
-import { OwnerAndNotes } from "@/components/notes/NoteSidebar";
 import { Button } from "@/components/ui/button";
 import { getNote } from "@/lib/action";
 import Link from "next/link";
