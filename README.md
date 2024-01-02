@@ -4,6 +4,7 @@
 
 - Fix issue relating to submitting empty `title or content` from the frontend
 - Add better skeleton to show cool loading experience when navigating to edit route using `edit` button
+- Grab `error` messages thrown in server action within `error.tsx` file in all client routes.
 
 ###### TODO
 

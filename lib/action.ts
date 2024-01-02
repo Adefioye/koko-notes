@@ -107,11 +107,11 @@ export const updateNote: UpdateNote = async (
   const content = formData.get("content") as string;
 
   if (!title) {
-    throw new Response("Title must not be null", { status: 400 });
+    throw new Response("Title must be provided", { status: 400 });
   }
 
   if (!content) {
-    throw new Response("Content must not be null", { status: 400 });
+    throw new Response("Content must be provided", { status: 400 });
   }
 
   const result = updateNoteInDB(noteId, title, content);
