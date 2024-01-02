@@ -1,5 +1,13 @@
 # KOKO NOTES APP
 
+### WORK DONE SO FAR
+
+- Created home page
+- Created `/users/[userName]` dynamic route for displaying current user and added error handling page, if wrong `userName` is used the route segment.
+- Created `/users/[userName]/notes` route for displaying common layout for all notes link for a user with name `userName`. Also generic note message is displayed
+- Created `/users/[userName]/notes/[noteId]` for displaying common layout for all notes just like the route above and `title` and `content` of a note link. Subsequently, error handling page was created to display a generic UI when an unknown `noteId` was provided in thr route.
+- Functionalites for editing form was also implemented and several Nextjs actions were created for `fetching user`, `fetching owner and notes`, `fetching, updating and deleting notes`.
+
 ###### PROBLEMS YET TO BE SOLVED
 
 - Fix issue relating to submitting empty `title or content` from the frontend
