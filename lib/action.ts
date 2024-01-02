@@ -16,7 +16,11 @@ export async function getUserName(userName: string) {
       },
     });
 
-    invariantResponse(user, "User not found", { status: 404 });
+    if (!user) {
+      throw new Response("User not found", { status: 404 });
+    }
+
+    // invariantResponse(user, "User not found", { status: 404 });
 
     return NextResponse.json({
       user: { name: user?.name, username: user?.username },

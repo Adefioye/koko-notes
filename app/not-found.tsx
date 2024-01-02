@@ -7,7 +7,7 @@ export default function DefaultNotFound() {
       <p>Could not find the requested user</p>
       <Link
         href="/"
-        className="mt-4 rounded-md px-4 py-2 text-sm text-white transition-colors"
+        className="mt-4 rounded-md px-4 py-2 text-sm text-white bg-blue-500 hover:bg-blue-400 transition-colors"
       >
         Go Back
       </Link>
