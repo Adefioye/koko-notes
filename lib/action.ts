@@ -3,7 +3,10 @@
 import { db } from "@/utils/db.server";
 import { NextResponse } from "next/server";
 import { redirect } from "next/navigation";
-import { UserNameAndNotedId } from "@/components/notes/EditForm";
+import {
+  UserNameAndNotedId,
+  editFormSchema,
+} from "@/components/notes/EditForm";
 import { invariantResponse } from "@/utils/misc";
 
 export async function getUserName(userName: string) {
@@ -93,10 +96,10 @@ const updateNoteInDB = (noteId: string, title: string, content: string) => {
   }
 };
 
-type UpdateNote = (
+export type UpdateNote = (
   prevState: UserNameAndNotedId,
   formData: FormData
-) => string | Promise<string>;
+) => string | Promise<string | { error: string }>;
 
 export const updateNote: UpdateNote = async (
   prevState: UserNameAndNotedId,
@@ -149,7 +152,6 @@ export async function deleteNote(
     case "delete":
       deleteNoteInDB(noteId);
       break;
-
     default:
       throw new Response("Bad Request", { status: 400 });
   }

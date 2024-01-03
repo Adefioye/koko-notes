@@ -1,17 +1,21 @@
 "use client";
 
-import React, { PropsWithChildren } from "react";
+import React from "react";
 import { useFormStatus } from "react-dom";
 import { Button } from "./ui/button";
 
-const StatusButton = ({ children }: PropsWithChildren) => {
+type Props = {
+  children?: React.ReactNode;
+  disableEditButton: boolean;
+};
+
+const StatusButton = ({ children, disableEditButton }: Props) => {
   const { pending } = useFormStatus();
 
-  console.log(pending);
   return (
     <Button
       type="submit"
-      disabled={pending}
+      disabled={disableEditButton || pending}
       className="flex justify-center gap-2"
     >
       {children}

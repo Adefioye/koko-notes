@@ -34,7 +34,7 @@ export default async function SomeNoteId({ params }: Props) {
   }
 
   return (
-    <form className="absolute inset-0 flex flex-col px-10">
+    <div className="absolute inset-0 flex flex-col px-10">
       <h2 className="mb-2 pt-12 text-h2 lg:mb-6">{note.title}</h2>
       <div className="overflow-y-auto pb-24">
         <p className="whitespace-break-spaces text-sm md:text-lg">
@@ -47,6 +47,6 @@ export default async function SomeNoteId({ params }: Props) {
           <Link href={`/users/${userName}/notes/${noteId}/edit`}>Edit</Link>
         </Button>
       </div>
-    </form>
+    </div>
   );
 }
