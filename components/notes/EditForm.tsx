@@ -28,6 +28,7 @@ type Props = {
 const EditForm = ({ initialState, note }: Props) => {
   // @ts-expect-error //TODO Error with typing updateNote action properly
   const [_, formAction] = useFormState(updateNote, initialState);
+  const formId = "note-editor";
 
   const form = useForm<z.infer<typeof editFormSchema>>({
     mode: "onBlur",
@@ -43,6 +44,7 @@ const EditForm = ({ initialState, note }: Props) => {
   return (
     <Form {...form}>
       <form
+        id={formId}
         action={formAction}
         className="flex h-full flex-col gap-y-4 overflow-x-hidden px-10 pb-28 pt-12"
       >
@@ -79,7 +81,11 @@ const EditForm = ({ initialState, note }: Props) => {
           />
         </div>
         <div className="absolute bottom-3 left-3 right-3 flex items-center gap-2 rounded-lg bg-muted/80 p-4 pl-5 shadow-xl shadow-accent backdrop-blur-sm md:gap-4 md:pl-7 justify-end">
-          <Button variant="destructive" type="reset">
+          <Button
+            onClick={() => form.reset()}
+            variant="destructive"
+            type="reset"
+          >
             Reset
           </Button>
           <StatusButton disableEditButton={disableEditButton}>
