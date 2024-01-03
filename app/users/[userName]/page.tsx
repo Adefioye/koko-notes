@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { getUserName } from "@/lib/action";
 import { notFound } from "next/navigation";
-import type { Metadata } from "next";
 
 type Props = {
   params: { userName: string };

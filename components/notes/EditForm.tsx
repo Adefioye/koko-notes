@@ -18,23 +18,14 @@ import {
   FormMessage,
 } from "../ui/form";
 import { updateNote } from "@/lib/action";
-
-export type UserNameAndNotedId = {
-  userName: string;
-  noteId: string;
-};
+import { UserNameAndNotedId, editFormSchema } from "@/utils/types";
 
 type Props = {
   initialState: UserNameAndNotedId;
   note: { title: string; content: string };
 };
 
-export const editFormSchema = z.object({
-  title: z.string().min(5).max(100),
-  content: z.string().min(5).max(10000),
-});
-
-const EditForm = ({ initialState, note}: Props) => {
+const EditForm = ({ initialState, note }: Props) => {
   // @ts-expect-error //TODO Error with typing updateNote action properly
   const [_, formAction] = useFormState(updateNote, initialState);
 

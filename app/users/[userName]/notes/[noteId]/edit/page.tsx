@@ -1,10 +1,7 @@
 import { getNote } from "@/lib/action";
 import React from "react";
 import EditForm from "@/components/notes/EditForm";
-
-export type NoteEditProps = {
-  params: { userName: string; noteId: string };
-};
+import { NoteEditProps } from "@/utils/types";
 
 const NoteEdit = async ({ params }: NoteEditProps) => {
   const { userName, noteId } = params;
