@@ -10,8 +10,7 @@ type Props = {
 
 export async function generateMetadata({ params }: Props) {
   const displayName = params.userName;
-  const data = await getNote(params.noteId);
-  const { note } = await data.json();
+  const { note } = await getNote(params.noteId);
   const noteTitle = note?.title ?? "Note";
   const noteContent = (note?.content as string) ?? "No content";
   const noteContentSummary =
@@ -26,10 +25,9 @@ export async function generateMetadata({ params }: Props) {
 
 export default async function SomeNoteId({ params }: Props) {
   const { userName, noteId } = params;
-  const data = await getNote(noteId);
-  const { note } = await data.json();
+  const { note } = await getNote(noteId);
 
-  if (!(note.title && note.content)) {
+  if (!note) {
     notFound();
   }
 

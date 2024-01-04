@@ -12,7 +12,7 @@ type Props = {
 };
 
 export async function generateMetadata({ params }: Props) {
-  const {owner, notes}: OwnerAndNotes = await getOwnerAndNotes(params.userName);
+  const {_, notes}: OwnerAndNotes = await getOwnerAndNotes(params.userName);
   const numOfNotes = notes.length;
   const displayName = params.userName;
   const notesText = numOfNotes === 0 ? "note" : "notes";

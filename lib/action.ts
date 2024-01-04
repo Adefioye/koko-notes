@@ -63,9 +63,7 @@ export async function getNote(noteId: string) {
         },
       },
     });
-    return NextResponse.json({
-      note: { title: note?.title, content: note?.content },
-    });
+    return { note };
   } catch (error) {
     console.log(error);
     throw error;
