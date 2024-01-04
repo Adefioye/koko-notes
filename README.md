@@ -1,5 +1,12 @@
 # KOKO NOTES APP
 
+This application is motivated by Epic web dev course by Kent C Dodds. It was originally built using Remix. However, Since I am not interested in learning Remix. I instead developed the application entirely using Nextjs App Router in order to solidify my knowledge of building a professional-grade website with form validation and security, accessibility, role-based authentication and authorization, testing(including unit, integration and end-to-end testing).
+
+## What makes this different
+
+- Most of the implementations were Nextjs specific
+- Form validation was done using `react-hook-form` and `zod` instead of `conform`
+
 ### WORK DONE SO FAR
 
 - Created home page

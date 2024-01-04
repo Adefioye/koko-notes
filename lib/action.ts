@@ -3,8 +3,7 @@
 import { db } from "@/utils/db.server";
 import { NextResponse } from "next/server";
 import { redirect } from "next/navigation";
-import { UserNameAndNotedId, editFormSchema } from "@/utils/types";
-import { invariantResponse } from "@/utils/misc";
+import { UserNameAndNotedId } from "@/utils/types";
 import { revalidatePath } from "next/cache";
 
 export async function getUserName(userName: string) {
