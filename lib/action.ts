@@ -5,6 +5,7 @@ import { NextResponse } from "next/server";
 import { redirect } from "next/navigation";
 import { UserNameAndNotedId, editFormSchema } from "@/utils/types";
 import { invariantResponse } from "@/utils/misc";
+import { revalidatePath } from "next/cache";
 
 export async function getUserName(userName: string) {
   try {
@@ -145,5 +146,6 @@ export async function deleteNote(
       throw new Response("Bad Request", { status: 400 });
   }
 
+  revalidatePath(`/users/${userName}/notes`);
   redirect(`/users/${userName}/notes`);
 }
