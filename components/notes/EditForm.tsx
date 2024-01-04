@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { Button } from "../ui/button";
 import { useFormState } from "react-dom";
 import { Input } from "../ui/input";
@@ -29,6 +29,7 @@ const EditForm = ({ initialState, note }: Props) => {
   // @ts-expect-error //TODO Error with typing updateNote action properly
   const [_, formAction] = useFormState(updateNote, initialState);
   const formId = "note-editor";
+  const formRef = useRef<HTMLFormElement>(null);
 
   const form = useForm<z.infer<typeof editFormSchema>>({
     mode: "onBlur",
@@ -38,12 +39,28 @@ const EditForm = ({ initialState, note }: Props) => {
       content: note.content,
     },
   });
+  const { formState } = form;
+  const { isDirty, isValid } = formState;
+  const disableEditButton = !(isDirty && isValid);
 
-  const disableEditButton = !(form.formState.isDirty && form.formState.isValid);
+  useEffect(() => {
+    const formEl = formRef.current;
+
+    console.log(formState);
+
+    if (!formEl) return;
+
+    // Focus on first field with invalia input onBlur
+    const firstInvalidFormEl = formEl.querySelector('[aria-invalid="true"]');
+    if (firstInvalidFormEl instanceof HTMLElement) {
+      firstInvalidFormEl.focus();
+    }
+  }, [formState]);
 
   return (
     <Form {...form}>
       <form
+        ref={formRef}
         id={formId}
         action={formAction}
         className="flex h-full flex-col gap-y-4 overflow-x-hidden px-10 pb-28 pt-12"
@@ -56,7 +73,12 @@ const EditForm = ({ initialState, note }: Props) => {
               <FormItem>
                 <FormLabel>Title</FormLabel>
                 <FormControl>
-                  <Input placeholder="Title" {...field} name="title" />
+                  <Input
+                    autoFocus
+                    placeholder="Title"
+                    {...field}
+                    name="title"
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
