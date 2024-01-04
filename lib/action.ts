@@ -33,19 +33,21 @@ export async function getOwnerAndNotes(userName: string) {
       },
     });
 
-    const notes = db.note
-      .findMany({
-        where: {
-          owner: {
-            username: {
-              equals: userName,
+    // Reassign notes to empty array if null
+    const notes =
+      db.note
+        .findMany({
+          where: {
+            owner: {
+              username: {
+                equals: userName,
+              },
             },
           },
-        },
-      })
-      .map(({ id, title }) => ({ id, title }));
+        })
+        .map(({ id, title }) => ({ id, title })) ?? [];
 
-    return NextResponse.json({ owner, notes });
+    return { owner, notes };
   } catch (error) {
     console.log(error);
     throw error;

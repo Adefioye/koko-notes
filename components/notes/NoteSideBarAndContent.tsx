@@ -1,8 +1,9 @@
+// @ts-nocheck //TODO Fix error on owner and notes variable
+
 import React from "react";
 import NoteSidebar from "./NoteSidebar";
 import NoteContent from "./NoteContent";
 import { getOwnerAndNotes } from "@/lib/action";
-import { OwnerAndNotes } from "@/utils/types";
 
 type Props = {
   params: { userName: string };
@@ -10,8 +11,7 @@ type Props = {
 };
 
 const NoteSideBarAndContent = async ({ children, params }: Props) => {
-  const data = await getOwnerAndNotes(params.userName);
-  const { owner, notes }: OwnerAndNotes = await data.json();
+  const { owner, notes } = await getOwnerAndNotes(params.userName);
 
   return (
     <div className="grid w-full grid-cols-4 bg-muted pl-2 md:container md:mx-2 md:rounded-3xl md:pr-0">

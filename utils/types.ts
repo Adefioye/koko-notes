@@ -12,9 +12,9 @@ export type User = {
 export type Note = {
   id: string;
   title: string;
-  content: string;
-  createdAt: Date;
-  owner: string;
+  content?: string;
+  createdAt?: Date;
+  owner?: string;
 };
 
 export type NoteEditProps = {
@@ -32,6 +32,6 @@ export type UserNameAndNotedId = {
 };
 
 export type OwnerAndNotes = {
-  owner: User;
+  owner: User | null;
   notes: Note[];
 };

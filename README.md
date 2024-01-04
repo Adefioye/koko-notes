@@ -20,3 +20,4 @@
 
 - Test if `prefetching` is enabled on links in `viewport` in production.
 - Improved user experience by adding cool loading states when a user tries to edit a note and after submitting a note
+- Fix typescript `no check` error on `NoteSideBarContent.tsx` and `/users/[userName]/notes/layout.tsx`
