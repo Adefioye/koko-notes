@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getUserName } from "@/lib/action";
 import { notFound } from "next/navigation";
+import { data } from "tailwindcss/defaultTheme";
 
 type Props = {
   params: { userName: string };
@@ -16,10 +17,9 @@ export async function generateMetadata({ params }: Props) {
 }
 
 export default async function KodyProfileRoute({ params }: Props) {
-  const data = await getUserName(params.userName);
-  const { user } = await data.json();
+  const { user } = await getUserName(params.userName);
 
-  if (!(user.name && user.username)) {
+  if (!user) {
     notFound();
   }
 

@@ -3,10 +3,7 @@
 import { db } from "@/utils/db.server";
 import { NextResponse } from "next/server";
 import { redirect } from "next/navigation";
-import {
-  UserNameAndNotedId,
-  editFormSchema,
-} from "@/components/notes/EditForm";
+import { UserNameAndNotedId, editFormSchema } from "@/utils/types";
 import { invariantResponse } from "@/utils/misc";
 
 export async function getUserName(userName: string) {
@@ -18,16 +15,8 @@ export async function getUserName(userName: string) {
         },
       },
     });
-
-    if (!user) {
-      throw new Response("User not found", { status: 404 });
-    }
-
-    // invariantResponse(user, "User not found", { status: 404 });
-
-    return NextResponse.json({
-      user: { name: user?.name, username: user?.username },
-    });
+    console.log(user);
+    return { user };
   } catch (error) {
     console.log(error);
     throw error;
