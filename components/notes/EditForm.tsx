@@ -18,7 +18,8 @@ import {
   FormMessage,
 } from "../ui/form";
 import { updateNote } from "@/lib/action";
-import { UserNameAndNotedId, editFormSchema } from "@/utils/types";
+import { UserNameAndNotedId, NoteEditorSchema } from "@/utils/types";
+import ImageChooser from "../ImageChooser";
 
 type Props = {
   initialState: UserNameAndNotedId;
@@ -31,9 +32,9 @@ const EditForm = ({ initialState, note }: Props) => {
   const formId = "note-editor";
   const formRef = useRef<HTMLFormElement>(null);
 
-  const form = useForm<z.infer<typeof editFormSchema>>({
+  const form = useForm<z.infer<typeof NoteEditorSchema>>({
     mode: "onBlur",
-    resolver: zodResolver(editFormSchema),
+    resolver: zodResolver(NoteEditorSchema),
     defaultValues: {
       title: note.title,
       content: note.content,
@@ -96,6 +97,19 @@ const EditForm = ({ initialState, note }: Props) => {
                     {...field}
                     name="content"
                   />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="file"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Image</FormLabel>
+                <FormControl>
+                  <ImageChooser />
                 </FormControl>
                 <FormMessage />
               </FormItem>
