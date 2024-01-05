@@ -5,6 +5,8 @@ import { NextResponse } from "next/server";
 import { redirect } from "next/navigation";
 import { UserNameAndNotedId } from "@/utils/types";
 import { revalidatePath } from "next/cache";
+import { writeImage } from "@/utils/misc";
+import { getId } from "@/utils/db.server";
 
 export async function getUserName(userName: string) {
   try {
@@ -90,29 +92,6 @@ export type UpdateNote = (
   formData: FormData
 ) => string | Promise<string | { error: string }>;
 
-export const updateNote: UpdateNote = async (
-  prevState: UserNameAndNotedId,
-  formData: FormData
-) => {
-  const { noteId, userName } = prevState;
-  const title = formData.get("title") as string;
-  const content = formData.get("content") as string;
-
-  if (!title) {
-    throw new Response("Title must be provided", { status: 400 });
-  }
-
-  if (!content) {
-    throw new Response("Content must be provided", { status: 400 });
-  }
-
-  const result = updateNoteInDB(noteId, title, content);
-  if (result) {
-    return redirect(`/users/${userName}/notes/${noteId}`);
-  } else {
-    return "Failed";
-  }
-};
 
 const deleteNoteInDB = (noteId: string) => {
   try {
@@ -148,3 +127,88 @@ export async function deleteNote(
   revalidatePath(`/users/${userName}/notes`);
   redirect(`/users/${userName}/notes`);
 }
+
+export const updateNote: UpdateNote = async (
+  prevState: UserNameAndNotedId,
+  formData: FormData
+) => {
+  const { noteId, userName } = prevState;
+  const title = formData.get("title") as string;
+  const content = formData.get("content") as string;
+
+  if (!title) {
+    throw new Response("Title must be provided", { status: 400 });
+  }
+
+  if (!content) {
+    throw new Response("Content must be provided", { status: 400 });
+  }
+
+  const result = updateNoteInDB(noteId, title, content);
+  if (result) {
+    return redirect(`/users/${userName}/notes/${noteId}`);
+  } else {
+    return "Failed";
+  }
+};
+
+
+// export async function updateNote({
+//   id,
+//   title,
+//   content,
+//   images,
+// }: {
+//   id: string;
+//   title: string;
+//   content: string;
+//   images?: Array<{
+//     id?: string;
+//     file?: File;
+//     altText?: string;
+//   } | null>;
+// }) {
+//   const noteImagePromises =
+//     images?.map(async (image) => {
+//       if (!image) return null;
+
+//       if (image.id) {
+//         const hasReplacement = (image?.file?.size || 0) > 0;
+//         const filepath =
+//           image.file && hasReplacement
+//             ? await writeImage(image.file)
+//             : undefined;
+//         // update the ID so caching is invalidated
+//         const id = image.file && hasReplacement ? getId() : image.id;
+
+//         return db.image.update({
+//           where: { id: { equals: image.id } },
+//           data: {
+//             id,
+//             filepath,
+//             altText: image.altText,
+//           },
+//         });
+//       } else if (image.file) {
+//         if (image.file.size < 1) return null;
+//         const filepath = await writeImage(image.file);
+//         return db.image.create({
+//           altText: image.altText,
+//           filepath,
+//           contentType: image.file.type,
+//         });
+//       } else {
+//         return null;
+//       }
+//     }) ?? [];
+
+//   const noteImages = await Promise.all(noteImagePromises);
+//   db.note.update({
+//     where: { id: { equals: id } },
+//     data: {
+//       title,
+//       content,
+//       images: noteImages.filter(Boolean),
+//     },
+//   });
+// }

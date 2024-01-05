@@ -7,7 +7,7 @@ import crypto from "crypto";
 import { factory, manyOf, nullable, oneOf, primaryKey } from "@mswjs/data";
 import { singleton } from "./singleton.server.ts";
 
-const getId = () => crypto.randomBytes(16).toString("hex").slice(0, 8);
+export const getId = () => crypto.randomBytes(16).toString("hex").slice(0, 8);
 
 export const db = singleton("db", () => {
   const db = factory({
@@ -29,6 +29,12 @@ export const db = singleton("db", () => {
       createdAt: () => new Date(),
 
       owner: oneOf("user"),
+    },
+    image: {
+      id: primaryKey(getId),
+      filepath: String,
+      contentType: String,
+      altText: nullable(String),
     },
   });
 

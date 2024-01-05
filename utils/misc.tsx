@@ -1,4 +1,7 @@
 import { type ClassValue, clsx } from "clsx";
+import path from "path";
+import fs from "node:fs/promises";
+import os from "os";
 import { twMerge } from "tailwind-merge";
 
 /**
@@ -55,6 +58,16 @@ export function invariantResponse(
       { status: 400, ...responseInit }
     );
   }
+}
+
+export async function writeImage(image: File) {
+  const tmpDir = path.join(os.tmpdir(), "epic-web", "images");
+  await fs.mkdir(tmpDir, { recursive: true });
+
+  const timestamp = Date.now();
+  const filepath = path.join(tmpDir, `${timestamp}.${image.name}`);
+  await fs.writeFile(filepath, Buffer.from(await image.arrayBuffer()));
+  return filepath;
 }
 
 /**
