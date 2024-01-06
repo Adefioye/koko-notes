@@ -92,7 +92,6 @@ export type UpdateNote = (
   formData: FormData
 ) => string | Promise<string | { error: string }>;
 
-
 const deleteNoteInDB = (noteId: string) => {
   try {
     const result = db.note.delete({
@@ -128,87 +127,94 @@ export async function deleteNote(
   redirect(`/users/${userName}/notes`);
 }
 
-export const updateNote: UpdateNote = async (
+// export const updateNote: UpdateNote = async (
+//   prevState: UserNameAndNotedId,
+//   formData: FormData
+// ) => {
+//   const { noteId, userName } = prevState;
+//   const title = formData.get("title") as string;
+//   const content = formData.get("content") as string;
+
+//   if (!title) {
+//     throw new Response("Title must be provided", { status: 400 });
+//   }
+
+//   if (!content) {
+//     throw new Response("Content must be provided", { status: 400 });
+//   }
+
+//   const result = updateNoteInDB(noteId, title, content);
+//   if (result) {
+//     return redirect(`/users/${userName}/notes/${noteId}`);
+//   } else {
+//     return "Failed";
+//   }
+// };
+
+export async function updateNote(
   prevState: UserNameAndNotedId,
   formData: FormData
-) => {
+) {
   const { noteId, userName } = prevState;
   const title = formData.get("title") as string;
   const content = formData.get("content") as string;
+  const file = formData.get("file") as File;
+  const altText = formData.get("altText") as string;
 
-  if (!title) {
-    throw new Response("Title must be provided", { status: 400 });
-  }
+  console.log("file, altText: ", file, altText);
+  const images = [
+    {
+      id: "",
+      file,
+      altText,
+    },
+  ];
 
-  if (!content) {
-    throw new Response("Content must be provided", { status: 400 });
-  }
+  const noteImagePromises =
+    images?.map(async (image) => {
+      if (!image) return null;
 
-  const result = updateNoteInDB(noteId, title, content);
-  if (result) {
-    return redirect(`/users/${userName}/notes/${noteId}`);
-  } else {
-    return "Failed";
-  }
-};
+      if (image.id) {
+        const hasReplacement = (image?.file?.size || 0) > 0;
+        const filepath =
+          image.file && hasReplacement
+            ? await writeImage(image.file)
+            : undefined;
+        // update the ID so caching is invalidated
+        const id = image.file && hasReplacement ? getId() : image.id;
 
+        return db.image.update({
+          where: { id: { equals: image.id } },
+          data: {
+            id,
+            filepath,
+            altText: image.altText,
+          },
+        });
+      } else if (image.file) {
+        if (image.file.size < 1) return null;
+        const filepath = await writeImage(image.file);
+        return db.image.create({
+          altText: image.altText,
+          filepath,
+          contentType: image.file.type,
+        });
+      } else {
+        return null;
+      }
+    }) ?? [];
 
-// export async function updateNote({
-//   id,
-//   title,
-//   content,
-//   images,
-// }: {
-//   id: string;
-//   title: string;
-//   content: string;
-//   images?: Array<{
-//     id?: string;
-//     file?: File;
-//     altText?: string;
-//   } | null>;
-// }) {
-//   const noteImagePromises =
-//     images?.map(async (image) => {
-//       if (!image) return null;
+  const noteImages = await Promise.all(noteImagePromises);
+  db.note.update({
+    where: { id: { equals: noteId } },
+    data: {
+      title,
+      content,
+      //@ts-expect-error //TODO fix this type issue later
+      images: noteImages.filter(Boolean),
+    },
+  });
 
-//       if (image.id) {
-//         const hasReplacement = (image?.file?.size || 0) > 0;
-//         const filepath =
-//           image.file && hasReplacement
-//             ? await writeImage(image.file)
-//             : undefined;
-//         // update the ID so caching is invalidated
-//         const id = image.file && hasReplacement ? getId() : image.id;
-
-//         return db.image.update({
-//           where: { id: { equals: image.id } },
-//           data: {
-//             id,
-//             filepath,
-//             altText: image.altText,
-//           },
-//         });
-//       } else if (image.file) {
-//         if (image.file.size < 1) return null;
-//         const filepath = await writeImage(image.file);
-//         return db.image.create({
-//           altText: image.altText,
-//           filepath,
-//           contentType: image.file.type,
-//         });
-//       } else {
-//         return null;
-//       }
-//     }) ?? [];
-
-//   const noteImages = await Promise.all(noteImagePromises);
-//   db.note.update({
-//     where: { id: { equals: id } },
-//     data: {
-//       title,
-//       content,
-//       images: noteImages.filter(Boolean),
-//     },
-//   });
-// }
+  revalidatePath(`/users/${userName}/notes/${noteId}`);
+  return redirect(`/users/${userName}/notes/${noteId}`);
+}

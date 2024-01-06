@@ -18,16 +18,15 @@ import {
   FormMessage,
 } from "../ui/form";
 import { updateNote } from "@/lib/action";
-import { UserNameAndNotedId, NoteEditorSchema } from "@/utils/types";
+import { UserNameAndNotedId, NoteEditorSchema, Note } from "@/utils/types";
 import ImageChooser from "../ImageChooser";
 
 type Props = {
   initialState: UserNameAndNotedId;
-  note: { title: string; content: string };
+  note: Note;
 };
 
 const EditForm = ({ initialState, note }: Props) => {
-  // @ts-expect-error //TODO Error with typing updateNote action properly
   const [_, formAction] = useFormState(updateNote, initialState);
   const formId = "note-editor";
   const formRef = useRef<HTMLFormElement>(null);
@@ -109,7 +108,7 @@ const EditForm = ({ initialState, note }: Props) => {
               <FormItem>
                 <FormLabel>Image</FormLabel>
                 <FormControl>
-                  <ImageChooser />
+                  <ImageChooser image={note?.images && note.images[0]} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
