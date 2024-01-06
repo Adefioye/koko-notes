@@ -1,8 +1,10 @@
+/* eslint-disable @next/next/no-img-element */
 import DeleteNoteButton from "@/components/notes/DeleteNoteButton";
 import { Button } from "@/components/ui/button";
 import { getNote } from "@/lib/action";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { data } from "tailwindcss/defaultTheme";
 
 type Props = {
   params: { userName: string; noteId: string };
@@ -35,6 +37,19 @@ export default async function SomeNoteId({ params }: Props) {
     <div className="absolute inset-0 flex flex-col px-10">
       <h2 className="mb-2 pt-12 text-h2 lg:mb-6">{note.title}</h2>
       <div className="overflow-y-auto pb-24">
+        <ul className="flex flex-wrap gap-5 py-5">
+          {note.images.map((image) => (
+            <li key={image.id}>
+              <a href={`/resources/images/${image.id}`}>
+                <img
+                  src={`/resources/images/${image.id}`}
+                  alt={image.altText ?? ""}
+                  className="h-32 w-32 rounded-lg object-cover"
+                />
+              </a>
+            </li>
+          ))}
+        </ul>
         <p className="whitespace-break-spaces text-sm md:text-lg">
           {note.content}
         </p>

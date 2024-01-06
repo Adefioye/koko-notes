@@ -44,6 +44,8 @@ export async function GET(
     where: { id: { equals: imageId } },
   });
 
+  console.log(image);
+
   invariantResponse(image, "Image not found", { status: 404 });
 
   const { filepath, contentType } = image;
@@ -59,5 +61,5 @@ export async function GET(
     }),
   });
 
-  return res
+  return res;
 }

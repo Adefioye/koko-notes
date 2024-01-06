@@ -25,10 +25,9 @@ export const db = singleton("db", () => {
       id: primaryKey(getId),
       title: String,
       content: String,
-
       createdAt: () => new Date(),
-
       owner: oneOf("user"),
+      images: manyOf("image"),
     },
     image: {
       id: primaryKey(getId),
