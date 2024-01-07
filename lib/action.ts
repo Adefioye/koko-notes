@@ -160,11 +160,12 @@ export async function updateNote(
   const content = formData.get("content") as string;
   const file = formData.get("file") as File;
   const altText = formData.get("altText") as string;
+  const imageId = (formData.get("imageId") as string) ?? "";
 
-  console.log("file, altText: ", file, altText);
+  console.log("file, altText, imageId: ", file, altText, imageId);
   const images = [
     {
-      id: "",
+      id: imageId,
       file,
       altText,
     },
