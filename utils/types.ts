@@ -1,5 +1,7 @@
-import { z } from "zod";
+import { optional, z } from "zod";
 
+export const TITLE_MIN_LENGTH = 5;
+export const CONTENT_MIN_LENGTH = 5;
 export const TITLE_MAX_LENGTH = 100;
 export const CONTENT_MAX_LENGTH = 10000;
 
@@ -34,9 +36,7 @@ export type NoteEditProps = {
   params: { userName: string; noteId: string };
 };
 
-export const NoteEditorSchema = z.object({
-  title: z.string().min(5).max(100),
-  content: z.string().min(5).max(10000),
+const ImageFieldSetSchema = z.object({
   imageId: z.string().optional(),
   file: z
     .instanceof(File)
@@ -45,6 +45,12 @@ export const NoteEditorSchema = z.object({
     }, "File size must be less than 3MB")
     .optional(),
   altText: z.string().optional(),
+});
+
+export const NoteEditorSchema = z.object({
+  title: z.string().min(TITLE_MIN_LENGTH).max(TITLE_MAX_LENGTH),
+  content: z.string().min(CONTENT_MIN_LENGTH).max(CONTENT_MAX_LENGTH),
+  images: z.array(ImageFieldSetSchema),
 });
 
 export type UserNameAndNotedId = {

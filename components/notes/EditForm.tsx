@@ -7,7 +7,7 @@ import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import StatusButton from "../SubmitButton";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useFieldArray, useForm } from "react-hook-form";
 import * as z from "zod";
 import {
   Form,
@@ -37,16 +37,21 @@ const EditForm = ({ initialState, note }: Props) => {
     defaultValues: {
       title: note.title,
       content: note.content,
+      images: note.images?.length ? note.images : [{}],
     },
   });
+
+  const { fields, append, prepend, remove } = useFieldArray({
+    control: form.control,
+    name: "images",
+  });
+
   const { formState } = form;
   const { isDirty, isValid } = formState;
   const disableEditButton = !(isDirty && isValid);
 
   useEffect(() => {
     const formEl = formRef.current;
-
-    console.log(formState);
 
     if (!formEl) return;
 
@@ -56,6 +61,8 @@ const EditForm = ({ initialState, note }: Props) => {
       firstInvalidFormEl.focus();
     }
   }, [formState]);
+
+  console.log("Fields, note: ", fields.length, note);
 
   return (
     <Form {...form}>
@@ -103,18 +110,35 @@ const EditForm = ({ initialState, note }: Props) => {
           />
           <FormField
             control={form.control}
-            name="file"
-            render={({ field }) => (
+            name="images"
+            render={() => (
               <FormItem>
                 <FormLabel>Image</FormLabel>
-                <FormControl>
-                  <ImageChooser image={note?.images && note.images[0]} />
+                <FormControl className="flex flex-col gap-4">
+                  {fields.map((field, index) => (
+                    <li
+                      key={field.id}
+                      className="relative border-b-2 border-muted-foreground"
+                    >
+                      <button className="text-foreground-destructive absolute right-0 top-0">
+                        <span aria-hidden>❌</span>{" "}
+                        <span className="sr-only">
+                          Remove image {index + 1}
+                        </span>
+                      </button>
+                      <ImageChooser />
+                    </li>
+                  ))}
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
         </div>
+        <Button className="mt-3">
+          <span aria-hidden>➕ Image</span>{" "}
+          <span className="sr-only">Add image</span>
+        </Button>
         <div className="absolute bottom-3 left-3 right-3 flex items-center gap-2 rounded-lg bg-muted/80 p-4 pl-5 shadow-xl shadow-accent backdrop-blur-sm md:gap-4 md:pl-7 justify-end">
           <Button
             onClick={() => form.reset()}

@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { getNote } from "@/lib/action";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { data } from "tailwindcss/defaultTheme";
 
 type Props = {
   params: { userName: string; noteId: string };
