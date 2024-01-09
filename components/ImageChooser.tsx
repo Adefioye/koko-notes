@@ -9,7 +9,7 @@ const ImageChooser = ({
 }: {
   image?: { id: string; altText?: string | null };
 }) => {
-  const existingImage = Boolean(image);
+  const existingImage = Boolean(image?.id);
   const [previewImage, setPreviewImage] = useState<string | null>(
     existingImage ? `/resources/images/${image?.id}` : null
   );
