@@ -7,6 +7,7 @@ import { UserNameAndNotedId } from "@/utils/types";
 import { revalidatePath } from "next/cache";
 import { writeImage } from "@/utils/misc";
 import { getId } from "@/utils/db.server";
+import { zip } from "lodash";
 
 export async function getUserName(userName: string) {
   try {
@@ -158,18 +159,18 @@ export async function updateNote(
   const { noteId, userName } = prevState;
   const title = formData.get("title") as string;
   const content = formData.get("content") as string;
-  const file = formData.get("file") as File;
-  const altText = formData.get("altText") as string;
-  const imageId = (formData.get("imageId") as string) ?? "";
+  const imageFiles = formData.getAll("file") as File[] ?? [];
+  const imageAltTexts = formData.getAll("altText") as string[] ?? [];
+  const imageIds = formData.getAll("imageId") as string[] ?? [];
 
-  console.log("file, altText, imageId: ", file, altText, imageId);
-  const images = [
-    {
-      id: imageId,
-      file,
-      altText,
-    },
-  ];
+  const zipImageFeatures = zip(imageIds, imageFiles, imageAltTexts);
+  const images = zipImageFeatures.map((image) => ({
+    id: image[0],
+    file: image[1],
+    altText: image[2],
+  }));
+
+  console.log(images);
 
   const noteImagePromises =
     images?.map(async (image) => {

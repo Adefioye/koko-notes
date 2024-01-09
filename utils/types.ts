@@ -50,8 +50,10 @@ const ImageFieldSetSchema = z.object({
 export const NoteEditorSchema = z.object({
   title: z.string().min(TITLE_MIN_LENGTH).max(TITLE_MAX_LENGTH),
   content: z.string().min(CONTENT_MIN_LENGTH).max(CONTENT_MAX_LENGTH),
-  images: z.array(ImageFieldSetSchema),
+  images: z.union([z.array(ImageFieldSetSchema), z.object({}).array()]),
 });
+
+export type TNoteEditor = z.infer<typeof NoteEditorSchema>
 
 export type UserNameAndNotedId = {
   userName: string;

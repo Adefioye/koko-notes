@@ -18,7 +18,12 @@ import {
   FormMessage,
 } from "../ui/form";
 import { updateNote } from "@/lib/action";
-import { UserNameAndNotedId, NoteEditorSchema, Note } from "@/utils/types";
+import {
+  UserNameAndNotedId,
+  NoteEditorSchema,
+  Note,
+  TNoteEditor,
+} from "@/utils/types";
 import ImageChooser from "../ImageChooser";
 
 type Props = {
@@ -31,7 +36,7 @@ const EditForm = ({ initialState, note }: Props) => {
   const formId = "note-editor";
   const formRef = useRef<HTMLFormElement>(null);
 
-  const form = useForm<z.infer<typeof NoteEditorSchema>>({
+  const form = useForm<TNoteEditor>({
     mode: "onBlur",
     resolver: zodResolver(NoteEditorSchema),
     defaultValues: {
@@ -41,7 +46,7 @@ const EditForm = ({ initialState, note }: Props) => {
     },
   });
 
-  const { fields, append, prepend, remove } = useFieldArray({
+  const { fields, append, remove } = useFieldArray({
     control: form.control,
     name: "images",
   });
@@ -50,17 +55,17 @@ const EditForm = ({ initialState, note }: Props) => {
   const { isDirty, isValid } = formState;
   const disableEditButton = !(isDirty && isValid);
 
-  useEffect(() => {
-    const formEl = formRef.current;
+  // useEffect(() => {
+  //   const formEl = formRef.current;
 
-    if (!formEl) return;
+  //   if (!formEl) return;
 
-    // Focus on first field with invalia input onBlur
-    const firstInvalidFormEl = formEl.querySelector('[aria-invalid="true"]');
-    if (firstInvalidFormEl instanceof HTMLElement) {
-      firstInvalidFormEl.focus();
-    }
-  }, [formState]);
+  //   // Focus on first field with invalia input onBlur
+  //   const firstInvalidFormEl = formEl.querySelector('[aria-invalid="true"]');
+  //   if (firstInvalidFormEl instanceof HTMLElement) {
+  //     firstInvalidFormEl.focus();
+  //   }
+  // }, [formState]);
 
   console.log("Fields, note: ", fields.length, note);
 
@@ -114,13 +119,17 @@ const EditForm = ({ initialState, note }: Props) => {
             render={() => (
               <FormItem>
                 <FormLabel>Image</FormLabel>
-                <FormControl className="flex flex-col gap-4">
+                <ul className="flex flex-col gap-4">
                   {fields.map((field, index) => (
                     <li
                       key={field.id}
                       className="relative border-b-2 border-muted-foreground"
                     >
-                      <button className="text-foreground-destructive absolute right-0 top-0">
+                      <button
+                        type="button"
+                        onClick={() => remove(index)}
+                        className="text-foreground-destructive absolute right-0 top-0"
+                      >
                         <span aria-hidden>❌</span>{" "}
                         <span className="sr-only">
                           Remove image {index + 1}
@@ -129,13 +138,17 @@ const EditForm = ({ initialState, note }: Props) => {
                       <ImageChooser />
                     </li>
                   ))}
-                </FormControl>
+                </ul>
                 <FormMessage />
               </FormItem>
             )}
           />
         </div>
-        <Button className="mt-3">
+        <Button
+          className="mt-3"
+          type="button"
+          onClick={() => append({ altText: "" })}
+        >
           <span aria-hidden>➕ Image</span>{" "}
           <span className="sr-only">Add image</span>
         </Button>
