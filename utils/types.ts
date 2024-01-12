@@ -18,9 +18,9 @@ export type User = {
 
 export type Image = {
   id?: string;
-  filepath: string;
+  filepath?: string;
   contentType?: string;
-  altText: string;
+  altText?: string;
 };
 
 export type Note = {
@@ -35,8 +35,6 @@ export type Note = {
 export type NoteEditProps = {
   params: { userName: string; noteId: string };
 };
-
-export type TImageFieldSet = z.infer<typeof ImageFieldSetSchema>;
 
 const ImageFieldSetSchema = z.object({
   imageId: z.string().optional(),
@@ -55,9 +53,7 @@ export const NoteEditorSchema = z.object({
   images: z.union([z.array(ImageFieldSetSchema), z.object({}).array()]),
 });
 
-// {}[] | ImageFieldSchema[]
-
-export type TNoteEditor = z.infer<typeof NoteEditorSchema>;
+export type TNoteEditor = z.infer<typeof NoteEditorSchema>
 
 export type UserNameAndNotedId = {
   userName: string;

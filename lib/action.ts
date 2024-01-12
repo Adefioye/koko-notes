@@ -1,10 +1,9 @@
 "use server";
 
 import { db } from "@/utils/db.server";
-
 import { NextResponse } from "next/server";
 import { redirect } from "next/navigation";
-import { Image, TImageFieldSet, UserNameAndNotedId } from "@/utils/types";
+import { UserNameAndNotedId } from "@/utils/types";
 import { revalidatePath } from "next/cache";
 import { writeImage } from "@/utils/misc";
 import { getId } from "@/utils/db.server";
@@ -157,69 +156,66 @@ export async function updateNote(
   prevState: UserNameAndNotedId,
   formData: FormData
 ) {
+
+  console.log("Form data: ", formData)
   const { noteId, userName } = prevState;
-
-
   const title = formData.get("title") as string;
   const content = formData.get("content") as string;
-  const imageFiles = formData.getAll("file") as File[];
-  const imageIds = formData.getAll("imageId") as string[];
-  const imageAltTexts = formData.getAll("altText") as string[];
+  const imageFiles = formData.getAll("file") as File[] ?? [];
+  const imageAltTexts = formData.getAll("altText") as string[] ?? [];
+  const imageIds = formData.getAll("imageId") as string[] ?? [];
 
-  const zipImageProps = zip(imageIds, imageFiles, imageAltTexts);
-  const images = zipImageProps.map((image) => ({
+  const zipImageFeatures = zip(imageIds, imageFiles, imageAltTexts);
+  const images = zipImageFeatures.map((image) => ({
     id: image[0],
     file: image[1],
     altText: image[2],
   }));
 
-  console.log("Image ids, files, altTexts: ", imageIds, imageFiles, imageAltTexts)
-  console.log("Title, content and images: ", title, content, images);
+  const noteImagePromises =
+    images?.map(async (image) => {
+      if (!image) return null;
 
-  // const noteImagePromises =
-  //   images?.map(async (image) => {
-  //     if (!image) return null;
+      if (image.id) {
+        const hasReplacement = (image?.file?.size || 0) > 0;
+        const filepath =
+          image.file && hasReplacement
+            ? await writeImage(image.file)
+            : undefined;
+        // update the ID so caching is invalidated
+        const id = image.file && hasReplacement ? getId() : image.id;
 
-  //     if (image?.id) {
-  //       const hasReplacement = (image?.file?.size || 0) > 0;
-  //       const filepath =
-  //         image.file && hasReplacement
-  //           ? await writeImage(image.file)
-  //           : undefined;
-  //       // update the ID so caching is invalidated
-  //       const id = image.file && hasReplacement ? getId() : image.id;
+        return db.image.update({
+          where: { id: { equals: image.id } },
+          data: {
+            id,
+            filepath,
+            altText: image.altText,
+          },
+        });
+      } else if (image.file) {
+        if (image.file.size < 1) return null;
+        const filepath = await writeImage(image.file);
+        return db.image.create({
+          altText: image.altText,
+          filepath,
+          contentType: image.file.type,
+        });
+      } else {
+        return null;
+      }
+    }) ?? [];
 
-  //       return db.image.update({
-  //         where: { id: { equals: image.id } },
-  //         data: {
-  //           id,
-  //           filepath,
-  //           altText: image.altText,
-  //         },
-  //       });
-  //     } else if (image.file) {
-  //       if (image.file.size < 1) return null;
-  //       const filepath = await writeImage(image.file);
-  //       return db.image.create({
-  //         altText: image.altText,
-  //         filepath,
-  //         contentType: image.file.type,
-  //       });
-  //     } else {
-  //       return null;
-  //     }
-  //   }) ?? [];
-
-  // const noteImages = await Promise.all(noteImagePromises);
-  // db.note.update({
-  //   where: { id: { equals: noteId } },
-  //   data: {
-  //     title,
-  //     content,
-  //     // @ts-expect-error // TODO Fix typescript error here
-  //     images: noteImages.filter(Boolean),
-  //   },
-  // });
+  const noteImages = await Promise.all(noteImagePromises);
+  db.note.update({
+    where: { id: { equals: noteId } },
+    data: {
+      title,
+      content,
+      //@ts-expect-error //TODO fix this type issue later
+      images: noteImages.filter(Boolean),
+    },
+  });
 
   revalidatePath(`/users/${userName}/notes/${noteId}`);
   return redirect(`/users/${userName}/notes/${noteId}`);
