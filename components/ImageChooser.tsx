@@ -1,14 +1,18 @@
 /* eslint-disable @next/next/no-img-element */
 import { cn } from "@/utils/misc";
 import { Label } from "@radix-ui/react-label";
+import { UseFormRegister } from "react-hook-form";
+import { TNoteEditor } from "@/utils/types";
 import React, { useState } from "react";
 import { Textarea } from "./ui/textarea";
 
-const ImageChooser = ({
-  image,
-}: {
-  image?: { id: string; altText?: string | null };
-}) => {
+type Props = {
+  index: number;
+  image?: { id: string | undefined; altText?: string | null };
+  register: UseFormRegister<TNoteEditor>;
+};
+
+const ImageChooser = ({ register, image, index }: Props) => {
   const existingImage = Boolean(image?.id);
   const [previewImage, setPreviewImage] = useState<string | null>(
     existingImage ? `/resources/images/${image?.id}` : null
@@ -46,9 +50,14 @@ const ImageChooser = ({
                 </div>
               )}
               {existingImage ? (
-                <input name="imageId" type="hidden" value={image?.id} />
+                <input
+                  {...register(`images.${index}.imageId`)}
+                  type="hidden"
+                  value={image?.id}
+                />
               ) : null}
               <input
+                {...register(`images.${index}.file`)}
                 id="image-input"
                 aria-label="Image"
                 className="absolute left-0 top-0 z-0 h-32 w-32 cursor-pointer opacity-0"
@@ -65,7 +74,6 @@ const ImageChooser = ({
                     setPreviewImage(null);
                   }
                 }}
-                name="file"
                 type="file"
                 accept="image/*"
               />
@@ -76,7 +84,7 @@ const ImageChooser = ({
           <Label htmlFor="alt-text">Alt Text</Label>
           <Textarea
             id="alt-text"
-            name="altText"
+            {...register(`images.${index}.altText`)}
             defaultValue={altText}
             onChange={(e) => setAltText(e.currentTarget.value)}
           />
