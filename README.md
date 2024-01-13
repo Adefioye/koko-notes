@@ -22,6 +22,7 @@ This application is motivated by Epic web dev course by Kent C Dodds. It was ori
 - Add better skeleton to show cool loading experience when navigating to edit route using `edit` button
 - Find a more creative way of handling `error` messages thrown in server action within `error.tsx` file in all client routes or perhaps handling it without using `error.tsx` file.
 - Add server-side validation for edit note form.
+- Fix a typescript related issue related to passing `image` prop to __ImageChooser__ component.
 
 ###### TODO
 

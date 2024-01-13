@@ -155,14 +155,13 @@ export async function updateNote(
   prevState: UserNameAndNotedId,
   formData: FormData
 ) {
-
-  console.log("Form data: ", formData)
+  console.log("Form data: ", formData);
   const { noteId, userName } = prevState;
   const title = formData.get("title") as string;
   const content = formData.get("content") as string;
-  const imageFiles = formData.getAll("file") as File[] ?? [];
-  const imageAltTexts = formData.getAll("altText") as string[] ?? [];
-  const imageIds = formData.getAll("imageId") as string[] ?? [];
+  const imageFiles = (formData.getAll("file") as File[]) ?? [];
+  const imageAltTexts = (formData.getAll("altText") as string[]) ?? [];
+  const imageIds = (formData.getAll("imageId") as string[]) ?? [];
 
   const zipImageFeatures = zip(imageIds, imageFiles, imageAltTexts);
   const images = zipImageFeatures.map((image) => ({
@@ -218,4 +217,15 @@ export async function updateNote(
 
   revalidatePath(`/users/${userName}/notes/${noteId}`);
   return redirect(`/users/${userName}/notes/${noteId}`);
+}
+
+export async function signUp(prevState: any, formData: FormData) {
+  console.log(formData)
+  const nameConfirm = formData.get("name__confirm");
+
+  console.log("Name confirm: ", nameConfirm);
+
+  if (nameConfirm) {
+    throw new Response("Cannot submit sign up form", { status: 400 });
+  }
 }
