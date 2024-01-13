@@ -1,4 +1,4 @@
-import { optional, z } from "zod";
+import { z } from "zod";
 
 export const TITLE_MIN_LENGTH = 5;
 export const CONTENT_MIN_LENGTH = 5;

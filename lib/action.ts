@@ -1,7 +1,6 @@
 "use server";
 
 import { db } from "@/utils/db.server";
-import { NextResponse } from "next/server";
 import { redirect } from "next/navigation";
 import { UserNameAndNotedId } from "@/utils/types";
 import { revalidatePath } from "next/cache";
