@@ -6,6 +6,8 @@ This application is motivated by Epic web dev course by Kent C Dodds. It was ori
 
 - Most of the implementations were Nextjs specific
 - Form validation was done using `react-hook-form` and `zod` instead of `conform`
+- Implemented honeypot to prevent spam bots from submitting __signup form__.
+
 
 ### WORK DONE SO FAR
 
@@ -23,6 +25,7 @@ This application is motivated by Epic web dev course by Kent C Dodds. It was ori
 - Find a more creative way of handling `error` messages thrown in server action within `error.tsx` file in all client routes or perhaps handling it without using `error.tsx` file.
 - Add server-side validation for edit note form.
 - Fix a typescript related issue related to passing `image` prop to __ImageChooser__ component.
+- Implement CSRF using `Next-auth`
 
 ###### TODO
 
