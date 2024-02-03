@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -18,6 +15,7 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   notes     Note[]
+  image     UserImage?
 }
 
 model Note {
@@ -28,4 +26,27 @@ model Note {
   updatedAt DateTime @updatedAt
   owner     User @relation(fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   ownerId   String 
+  images    NoteImage[]
+}
+
+model UserImage {
+  id          String @id @default(cuid())
+  altText     String?
+  contentType String 
+  blob        Bytes
+  createdAt   DateTime 
+  updatedAt   DateTime
+  user        User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId      String @unique
+}
+
+model NoteImage {
+  id          String @id @default(cuid())
+  altText     String?
+  contentType String
+  blob        Bytes 
+  createdAt   DateTime 
+  updatedAt   DateTime 
+  note        Note @relation(fields: [noteId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  noteId      String
 }
