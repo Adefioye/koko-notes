@@ -8,9 +8,27 @@ const relativePathOfFile = "/public/images/kody-notes";
 const prisma = new PrismaClient();
 
 async function addNoteImages() {
-  const firstNote = await prisma.note.findFirst();
+  // Delete all data in database, Since user is related all current models in prisma schema
+  // We delete all users
+  await prisma.user.deleteMany();
 
-  console.log("First note: ", firstNote);
+  // Create new user koko
+  const koko = await prisma.user.create({
+    data: {
+      email: "koko@example.com",
+      username: "koko",
+      name: "Koko",
+    },
+  });
+  const firstNote = await prisma.note.create({
+    data: {
+      id: "d27a197e",
+      title: "Basic koala facts",
+      content:
+        "Koalas are found in the eucalyptus forests of eastern Australia. They have grey fur with a cream-coloured chest, and strong, clawed feet, perfect for living in the branches of trees!",
+      ownerId: koko.id,
+    },
+  });
 
   if (!firstNote) {
     throw new Error("You need to have a note in the database first");

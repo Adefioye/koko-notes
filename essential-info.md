@@ -8,3 +8,8 @@ sqlite3 prisma/data.db .dump > data.sql
 npx prisma migrate dev --name init
 ```
 
+3. Seeding database with prisma after setting up script with `prisma CLI`
+```
+npx prisma db seed
+```
+
