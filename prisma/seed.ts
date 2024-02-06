@@ -3,19 +3,30 @@ import path from "node:path";
 import fs from "node:fs";
 import { faker } from "@faker-js/faker";
 import { Promise as BlueBirdPromise } from "bluebird";
+import { UniqueEnforcer } from "enforce-unique";
 
 const cwd = process.cwd();
 const relativePathOfFile = "/public/images/";
 
 const prisma = new PrismaClient();
+const uniqueUsernameEnforcer = new UniqueEnforcer();
 
 export function createUser() {
   const firstName = faker.person.firstName();
   const lastName = faker.person.lastName();
-  const username = faker.internet.userName({
-    firstName: firstName.toLowerCase(),
-    lastName: lastName.toLowerCase(),
+  let username = uniqueUsernameEnforcer.enforce(() => {
+    return faker.internet.userName({
+      firstName: firstName.toLowerCase(),
+      lastName: lastName.toLowerCase(),
+    });
   });
+
+  // Ensure its just 20 characters and replace non-alphanumeric character with underscore
+  username = username
+    .toLowerCase()
+    .slice(0, 20)
+    .replace(/[^a-z0-9]/g, "_");
+
   return {
     username,
     name: `${firstName} ${lastName}`,
@@ -102,30 +113,34 @@ async function seed() {
   );
 
   for (let i = 0; i < totalUsers; i++) {
-    await prisma.user.create({
-      data: {
-        ...createUser(),
-        image: {
-          create: userImages[i % 10],
+    try {
+      await prisma.user.create({
+        data: {
+          ...createUser(),
+          image: {
+            create: userImages[i % 10],
+          },
+          notes: {
+            create: Array.from({
+              length: faker.number.int({ min: 1, max: 3 }),
+            }).map(() => ({
+              title: faker.lorem.sentence(),
+              content: faker.lorem.paragraphs(),
+              images: {
+                create: Array.from({
+                  length: faker.number.int({ min: 1, max: 3 }),
+                }).map(() => {
+                  const imgNumber = faker.number.int({ min: 0, max: 9 });
+                  return noteImages[imgNumber];
+                }),
+              },
+            })),
+          },
         },
-        notes: {
-          create: Array.from({
-            length: faker.number.int({ min: 1, max: 3 }),
-          }).map(() => ({
-            title: faker.lorem.sentence(),
-            content: faker.lorem.paragraphs(),
-            images: {
-              create: Array.from({
-                length: faker.number.int({ min: 1, max: 3 }),
-              }).map(() => {
-                const imgNumber = faker.number.int({ min: 0, max: 9 });
-                return noteImages[imgNumber];
-              }),
-            },
-          })),
-        },
-      },
-    });
+      });
+    } catch (error) {
+      console.log("Error creating user: ", error);
+    }
   }
 
   console.timeEnd(`👤 Created ${totalUsers} users...`);
