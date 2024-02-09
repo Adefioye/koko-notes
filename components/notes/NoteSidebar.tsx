@@ -3,20 +3,29 @@
 import { cn } from "@/utils/misc";
 import { OwnerAndNotes } from "@/utils/types";
 import Link from "next/link";
-
 import { notFound, usePathname } from "next/navigation";
 
-const NoteSidebar = ({ owner, notes }: OwnerAndNotes) => {
+type Props = {
+  owner: {
+    name: string | null;
+    username: string;
+    notes: {
+      id: string;
+      title: string;
+    }[];
+  } | null;
+};
+
+const NoteSidebar = ({ owner }: Props) => {
   const pathname = usePathname();
   const ownerDisplayName = owner?.username ?? owner?.name;
   const navLinkDefaultClassName =
     "line-clamp-2 block rounded-l-full py-2 pl-8 pr-6 text-base lg:text-xl";
 
-  if (!owner || !notes) {
+  if (!owner) {
     notFound();
   }
 
-  console.log("Pathname: ", pathname);
   const isActive = (noteId: string) => {
     return pathname.includes(`/users/${ownerDisplayName}/notes/${noteId}`);
   };
@@ -33,7 +42,7 @@ const NoteSidebar = ({ owner, notes }: OwnerAndNotes) => {
           </h1>
         </Link>
         <ul className="overflow-y-auto overflow-x-hidden pb-12">
-          {notes.map((note) => (
+          {owner?.notes.map((note) => (
             <li key={note.id} className="p-1 pr-0">
               <Link
                 href={`/users/${owner.username ?? owner.name}/notes/${note.id}`}

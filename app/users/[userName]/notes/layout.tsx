@@ -1,7 +1,4 @@
-// @ts-nocheck //TODO Fix error on owner and notes variable
-
 import NoteSideBarAndContent from "@/components/notes/NoteSideBarAndContent";
-import { OwnerAndNotes } from "@/utils/types";
 import { getOwnerAndNotes } from "@/lib/action";
 
 type Props = {
@@ -12,8 +9,8 @@ type Props = {
 };
 
 export async function generateMetadata({ params }: Props) {
-  const {_, notes}: OwnerAndNotes = await getOwnerAndNotes(params.userName);
-  const numOfNotes = notes.length;
+  const { owner } = await getOwnerAndNotes(params.userName);
+  const numOfNotes = owner?.notes ? owner.notes.length : 0;
   const displayName = params.userName;
   const notesText = numOfNotes === 0 ? "note" : "notes";
   return {

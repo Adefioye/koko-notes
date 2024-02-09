@@ -15,7 +15,6 @@ export async function GET(
   });
 
   invariantResponse(image, "Image not found", { status: 404 });
-  console.log(image);
 
   const res = new NextResponse(image.blob, {
     status: 200,

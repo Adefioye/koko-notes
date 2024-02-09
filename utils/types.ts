@@ -12,8 +12,8 @@ export type User = {
   email: string;
   username: String;
   name?: string;
-  createdAt: Date;
-  notes: string;
+  createdAt?: Date;
+  notes?: string;
 };
 
 export type Image = {
@@ -53,14 +53,11 @@ export const NoteEditorSchema = z.object({
   images: z.union([z.array(ImageFieldSetSchema), z.object({}).array()]),
 });
 
-export type TNoteEditor = z.infer<typeof NoteEditorSchema>
+export type TNoteEditor = z.infer<typeof NoteEditorSchema>;
 
 export type UserNameAndNotedId = {
   userName: string;
   noteId: string;
 };
 
-export type OwnerAndNotes = {
-  owner: User | null;
-  notes: Note[];
-};
+export type OwnerAndNotes = User & { notes: Note[] };

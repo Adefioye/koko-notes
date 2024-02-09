@@ -30,29 +30,16 @@ export async function getUserName(userName: string) {
 
 export async function getOwnerAndNotes(userName: string) {
   try {
-    const owner = db.user.findFirst({
-      where: {
-        username: {
-          equals: userName,
-        },
+    const owner = await prisma.user.findUnique({
+      select: {
+        name: true,
+        username: true,
+        notes: { select: { id: true, title: true } },
       },
+      where: { username: userName },
     });
 
-    // Reassign notes to empty array if null
-    const notes =
-      db.note
-        .findMany({
-          where: {
-            owner: {
-              username: {
-                equals: userName,
-              },
-            },
-          },
-        })
-        .map(({ id, title }) => ({ id, title })) ?? [];
-
-    return { owner, notes };
+    return { owner };
   } catch (error) {
     console.log(error);
     throw error;
