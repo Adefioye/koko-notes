@@ -34,6 +34,7 @@ export async function getOwnerAndNotes(userName: string) {
       select: {
         name: true,
         username: true,
+        image: { select: { id: true } },
         notes: { select: { id: true, title: true } },
       },
       where: { username: userName },

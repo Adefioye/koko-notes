@@ -1,14 +1,15 @@
 "use client";
 
-import { cn } from "@/utils/misc";
-import { OwnerAndNotes } from "@/utils/types";
+import { cn, getUserImgSrc } from "@/utils/misc";
 import Link from "next/link";
 import { notFound, usePathname } from "next/navigation";
+import Image from "next/image";
 
 type Props = {
   owner: {
     name: string | null;
     username: string;
+    image: { id: string } | null;
     notes: {
       id: string;
       title: string;
@@ -40,6 +41,13 @@ const NoteSidebar = ({ owner }: Props) => {
           <h1 className="text-base font-bold md:text-lg lg:text-left lg:text-2xl">
             {owner.username ?? owner.name}&apos;s Notes
           </h1>
+          <Image
+            height={0}
+            width={0}
+            src={getUserImgSrc(owner.image?.id)}
+            alt={ownerDisplayName ?? ""}
+            className="h-16 w-16 rounded-full object-cover lg:h-24 lg:w-24"
+          />
         </Link>
         <ul className="overflow-y-auto overflow-x-hidden pb-12">
           {owner?.notes.map((note) => (
