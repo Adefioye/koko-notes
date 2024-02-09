@@ -1,6 +1,7 @@
 "use server";
 
 import { db } from "@/utils/db.server";
+import { prisma } from "./../utils/db.server";
 import { redirect } from "next/navigation";
 import { UserNameAndNotedId } from "@/utils/types";
 import { revalidatePath } from "next/cache";
@@ -10,14 +11,16 @@ import { zip } from "lodash";
 
 export async function getUserName(userName: string) {
   try {
-    const user = db.user.findFirst({
-      where: {
-        username: {
-          equals: userName,
-        },
+    const user = await prisma.user.findUnique({
+      where: { username: userName },
+      select: {
+        name: true,
+        createdAt: true,
+        image: { select: { id: true } },
+        username: true,
       },
     });
-    console.log(user);
+
     return { user };
   } catch (error) {
     console.log(error);
@@ -220,7 +223,7 @@ export async function updateNote(
 }
 
 export async function signUp(prevState: any, formData: FormData) {
-  console.log(formData)
+  console.log(formData);
   const nameConfirm = formData.get("name__confirm");
 
   console.log("Name confirm: ", nameConfirm);

@@ -2,13 +2,14 @@ import { PrismaClient } from "@prisma/client";
 import path from "node:path";
 import fs from "node:fs";
 import { faker } from "@faker-js/faker";
-import { Promise as BlueBirdPromise } from "bluebird";
+import Promise from "bluebird";
 import { UniqueEnforcer } from "enforce-unique";
+import { prisma } from "./../utils/db.server.ts";
 
 const cwd = process.cwd();
 const relativePathOfFile = "/public/images/";
 
-const prisma = new PrismaClient();
+// const prisma = new PrismaClient();
 const uniqueUsernameEnforcer = new UniqueEnforcer();
 
 export function createUser() {
@@ -147,7 +148,7 @@ async function seed() {
 
   console.time(`🐨 Created user "kody"`);
 
-  const kodyImages = await BlueBirdPromise.props({
+  const kodyImages = await Promise.props({
     kodyUser: img({
       filepath: path.join(cwd, relativePathOfFile, "/user/kody.png"),
     }),
