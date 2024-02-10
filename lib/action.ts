@@ -49,12 +49,13 @@ export async function getOwnerAndNotes(userName: string) {
 
 export async function getNote(noteId: string) {
   try {
-    const note = db.note.findFirst({
-      where: {
-        id: {
-          equals: noteId,
-        },
+    const note = await prisma.note.findUnique({
+      select: {
+        title: true,
+        content: true,
+        images: { select: { id: true, altText: true, contentType: true, blob: true } },
       },
+      where: { id: noteId },
     });
     return { note };
   } catch (error) {
@@ -83,14 +84,10 @@ export type UpdateNote = (
   formData: FormData
 ) => string | Promise<string | { error: string }>;
 
-const deleteNoteInDB = (noteId: string) => {
+const deleteNoteInDB = async (noteId: string) => {
   try {
-    const result = db.note.delete({
-      where: {
-        id: {
-          equals: noteId,
-        },
-      },
+    const result = await prisma.note.delete({
+      where: { id: noteId },
     });
     return result;
   } catch (error) {

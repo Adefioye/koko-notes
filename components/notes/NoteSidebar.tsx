@@ -38,9 +38,6 @@ const NoteSidebar = ({ owner }: Props) => {
           href={`/users/${owner.username ?? owner.name}`}
           className="pb-4 pl-8 pr-4 pt-12"
         >
-          <h1 className="text-base font-bold md:text-lg lg:text-left lg:text-2xl">
-            {owner.username ?? owner.name}&apos;s Notes
-          </h1>
           <Image
             height={0}
             width={0}
@@ -48,6 +45,9 @@ const NoteSidebar = ({ owner }: Props) => {
             alt={ownerDisplayName ?? ""}
             className="h-16 w-16 rounded-full object-cover lg:h-24 lg:w-24"
           />
+          <h1 className="text-base font-bold md:text-lg lg:text-left lg:text-2xl">
+            {owner.username ?? owner.name}&apos;s Notes
+          </h1>
         </Link>
         <ul className="overflow-y-auto overflow-x-hidden pb-12">
           {owner?.notes.map((note) => (
