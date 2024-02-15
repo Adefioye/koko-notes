@@ -11,7 +11,7 @@ const ImageChooser = ({
 }) => {
   const existingImage = Boolean(image?.id);
   const [previewImage, setPreviewImage] = useState<string | null>(
-    existingImage ? `/resources/images/${image?.id}` : null
+    existingImage ? `/resources/note-images/${image?.id}` : null
   );
   const [altText, setAltText] = useState(image?.altText ?? "");
   return (

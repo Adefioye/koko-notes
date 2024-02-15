@@ -39,9 +39,9 @@ export default async function SomeNoteId({ params }: Props) {
         <ul className="flex flex-wrap gap-5 py-5">
           {note.images.map((image) => (
             <li key={image.id}>
-              <a href={`/resources/images/${image.id}`}>
+              <a href={`/resources/note-images/${image.id}`}>
                 <img
-                  src={`/resources/images/${image.id}`}
+                  src={`/resources/note-images/${image.id}`}
                   alt={image.altText ?? ""}
                   className="h-32 w-32 rounded-lg object-cover"
                 />

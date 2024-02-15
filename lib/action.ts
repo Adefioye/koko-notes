@@ -53,7 +53,7 @@ export async function getNote(noteId: string) {
       select: {
         title: true,
         content: true,
-        images: { select: { id: true, altText: true, contentType: true, blob: true } },
+        images: { select: { id: true, altText: true } },
       },
       where: { id: noteId },
     });

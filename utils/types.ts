@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { z } from "zod";
 
 export const TITLE_MIN_LENGTH = 5;
@@ -47,10 +48,13 @@ const ImageFieldSetSchema = z.object({
   altText: z.string().optional(),
 });
 
+// id: string, altText: string, blob: Blob
+// contentType: string,
+
 export const NoteEditorSchema = z.object({
   title: z.string().min(TITLE_MIN_LENGTH).max(TITLE_MAX_LENGTH),
   content: z.string().min(CONTENT_MIN_LENGTH).max(CONTENT_MAX_LENGTH),
-  images: z.union([z.array(ImageFieldSetSchema), z.object({}).array()]),
+  images: z.array(ImageFieldSetSchema).max(5).optional(),
 });
 
 export type TNoteEditor = z.infer<typeof NoteEditorSchema>;
