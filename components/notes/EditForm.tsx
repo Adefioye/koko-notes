@@ -52,7 +52,7 @@ const EditForm = ({ initialState, note }: Props) => {
 
   const { fields, append, remove } = useFieldArray({
     control: form.control,
-    keyName: "customId",
+    keyName: "imageId",
     name: "images",
   });
   const { isDirty, isValid } = form.formState;
@@ -109,7 +109,7 @@ const EditForm = ({ initialState, note }: Props) => {
                 <ul className="flex flex-col gap-4">
                   {fields.map((field, index) => (
                     <li
-                      key={field.customId}
+                      key={field.imageId}
                       className="relative border-b-2 border-muted-foreground"
                     >
                       <button
@@ -123,8 +123,10 @@ const EditForm = ({ initialState, note }: Props) => {
                         </span>
                       </button>
                       <ImageChooser
-                        // TODO Seems to only pass because id and altText are allowed to have null values(Meanwhile there are values)
-                        image={{ id: field.id, altText: field.altText }}
+                        image={{
+                          id: `images.${index}.id`,
+                          altText: `images.${index}.altText`,
+                        }}
                       />
                     </li>
                   ))}

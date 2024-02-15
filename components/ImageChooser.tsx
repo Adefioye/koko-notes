@@ -3,17 +3,29 @@ import { cn } from "@/utils/misc";
 import { Label } from "@radix-ui/react-label";
 import React, { useState } from "react";
 import { Textarea } from "./ui/textarea";
+import { useFormContext, useWatch } from "react-hook-form";
 
 const ImageChooser = ({
   image,
 }: {
-  image?: { id: string | undefined; altText?: string | null };
+  image: { id: string; altText: string };
 }) => {
-  const existingImage = Boolean(image?.id);
-  const [previewImage, setPreviewImage] = useState<string | null>(
-    existingImage ? `/resources/note-images/${image?.id}` : null
+  const { control } = useFormContext();
+  const existingImage = Boolean(image.id);
+  const existingImageId = useWatch({ name: image.id, control });
+  const existingAltText = useWatch({ name: image.altText, control });
+  console.log(
+    "Existing imageId, existingAltText: ",
+    image.id,
+    image.altText,
+    existingImageId,
+    existingAltText
   );
-  const [altText, setAltText] = useState(image?.altText ?? "");
+
+  const [previewImage, setPreviewImage] = useState<string | null>(
+    existingImage ? `/resources/note-images/${existingImageId}` : null
+  );
+  const [altText, setAltText] = useState(existingImage ? existingAltText : "");
   return (
     <fieldset>
       <div className="flex gap-3">
