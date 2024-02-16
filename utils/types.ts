@@ -38,15 +38,17 @@ export type NoteEditProps = {
 };
 
 const ImageFieldSetSchema = z.object({
-  imageId: z.string().optional(),
+  id: z.string().optional(),
   file: z
     .instanceof(File)
+    .optional()
     .refine((file) => {
-      return file.size <= MAX_UPLOAD_SIZE;
-    }, "File size must be less than 3MB")
-    .optional(),
+      return !file || file.size <= MAX_UPLOAD_SIZE;
+    }, "File size must be less than 3MB"),
   altText: z.string().optional(),
 });
+
+export type ImageFieldSet = z.infer<typeof ImageFieldSetSchema>;
 
 // id: string, altText: string, blob: Blob
 // contentType: string,

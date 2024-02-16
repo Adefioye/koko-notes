@@ -1,9 +1,9 @@
-/* eslint-disable @next/next/no-img-element */
 import { cn } from "@/utils/misc";
 import { Label } from "@radix-ui/react-label";
 import React, { useState } from "react";
 import { Textarea } from "./ui/textarea";
 import { useFormContext, useWatch } from "react-hook-form";
+import Image from "next/image";
 
 const ImageChooser = ({
   image,
@@ -11,21 +11,15 @@ const ImageChooser = ({
   image: { id: string; altText: string };
 }) => {
   const { control } = useFormContext();
-  const existingImage = Boolean(image.id);
-  const existingImageId = useWatch({ name: image.id, control });
-  const existingAltText = useWatch({ name: image.altText, control });
-  console.log(
-    "Existing imageId, existingAltText: ",
-    image.id,
-    image.altText,
-    existingImageId,
-    existingAltText
-  );
+  const currentImageId = useWatch({ name: image.id, control });
+  const currentAltText = useWatch({ name: image.altText, control });
+  const existingImage = Boolean(currentImageId);
+  const existingAltText = Boolean(currentAltText);
 
   const [previewImage, setPreviewImage] = useState<string | null>(
-    existingImage ? `/resources/note-images/${existingImageId}` : null
+    existingImage ? `/resources/note-images/${currentImageId}` : null
   );
-  const [altText, setAltText] = useState(existingImage ? existingAltText : "");
+  const [altText, setAltText] = useState(existingAltText ? currentAltText : "");
   return (
     <fieldset>
       <div className="flex gap-3">
@@ -41,7 +35,9 @@ const ImageChooser = ({
             >
               {previewImage ? (
                 <div className="relative">
-                  <img
+                  <Image
+                    height={0}
+                    width={0}
                     src={previewImage}
                     alt={altText ?? ""}
                     className="h-32 w-32 rounded-lg object-cover"
@@ -58,18 +54,20 @@ const ImageChooser = ({
                 </div>
               )}
               {existingImage ? (
-                <input name="imageId" type="hidden" value={image?.id} />
+                <input name="imageId" type="hidden" value={currentImageId} />
               ) : null}
               <input
                 id="image-input"
                 aria-label="Image"
                 className="absolute left-0 top-0 z-0 h-32 w-32 cursor-pointer opacity-0"
                 onChange={(event) => {
+                  console.log("Files: ", event.target.files);
                   const file = event.target.files?.[0];
 
                   if (file) {
                     const reader = new FileReader();
                     reader.onloadend = () => {
+                      console.log("File and reader: ", reader.result);
                       setPreviewImage(reader.result as string);
                     };
                     reader.readAsDataURL(file);

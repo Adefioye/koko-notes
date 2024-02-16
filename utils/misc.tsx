@@ -4,6 +4,7 @@ import fs from "node:fs/promises";
 import os from "os";
 import { twMerge } from "tailwind-merge";
 import userFallback from "./../public/user.png";
+import { ImageFieldSet } from "./types";
 
 export function getUserImgSrc(imageId?: string | null) {
   return imageId ? `/resources/user-images/${imageId}` : userFallback;
@@ -11,6 +12,18 @@ export function getUserImgSrc(imageId?: string | null) {
 
 export function getNoteImgSrc(imageId: string) {
   return `/resources/note-images/${imageId}`;
+}
+
+export function hasImageFile(
+  image: ImageFieldSet
+): image is ImageFieldSet & { file: NonNullable<ImageFieldSet["file"]> } {
+  return Boolean(image?.file?.size && image.file.size > 0);
+}
+
+export function hasImageId(
+  image: ImageFieldSet
+): image is ImageFieldSet & { id: NonNullable<ImageFieldSet["id"]> } {
+  return Boolean(image.id);
 }
 
 /**
