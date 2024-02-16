@@ -7,6 +7,12 @@ export const TITLE_MAX_LENGTH = 100;
 export const CONTENT_MAX_LENGTH = 10000;
 
 export const MAX_UPLOAD_SIZE = 1024 * 1024 * 3; // 3MB
+const ACCEPTED_IMAGE_TYPES = [
+  "image/jpeg",
+  "image/jpg",
+  "image/png",
+  "image/webp",
+];
 
 export type User = {
   id: string;
@@ -40,18 +46,19 @@ export type NoteEditProps = {
 const ImageFieldSetSchema = z.object({
   id: z.string().optional(),
   file: z
-    .instanceof(File)
-    .optional()
-    .refine((file) => {
-      return !file || file.size <= MAX_UPLOAD_SIZE;
-    }, "File size must be less than 3MB"),
+  .instanceof(File)
+  .optional()
+  .refine((file) => {
+    return !file || file.size <= MAX_UPLOAD_SIZE;
+  }, "File size must be less than 3MB"),
   altText: z.string().optional(),
 });
 
+
+
 export type ImageFieldSet = z.infer<typeof ImageFieldSetSchema>;
 
-// id: string, altText: string, blob: Blob
-// contentType: string,
+
 
 export const NoteEditorSchema = z.object({
   title: z.string().min(TITLE_MIN_LENGTH).max(TITLE_MAX_LENGTH),

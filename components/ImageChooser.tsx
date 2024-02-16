@@ -61,13 +61,16 @@ const ImageChooser = ({
                 aria-label="Image"
                 className="absolute left-0 top-0 z-0 h-32 w-32 cursor-pointer opacity-0"
                 onChange={(event) => {
-                  console.log("Files: ", event.target.files);
+                  console.log(
+                    "Files, values: ",
+                    event.target.files,
+                    event.target.value
+                  );
                   const file = event.target.files?.[0];
 
                   if (file) {
                     const reader = new FileReader();
                     reader.onloadend = () => {
-                      console.log("File and reader: ", reader.result);
                       setPreviewImage(reader.result as string);
                     };
                     reader.readAsDataURL(file);

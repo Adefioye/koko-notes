@@ -55,8 +55,10 @@ const EditForm = ({ initialState, note }: Props) => {
     keyName: "imageId",
     name: "images",
   });
-  const { isDirty, isValid } = form.formState;
+  const { isDirty, isValid, dirtyFields, errors } = form.formState;
   const disableEditButton = !(isDirty && isValid);
+
+  console.log("Isdirty, isValid: ", isDirty, isValid, errors);
 
   return (
     <Form {...form}>

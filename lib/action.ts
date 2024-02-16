@@ -1,13 +1,13 @@
 "use server";
 
-import { db } from "@/utils/db.server";
 import { prisma } from "./../utils/db.server";
 import { redirect } from "next/navigation";
 import { NoteEditorSchema, UserNameAndNotedId } from "@/utils/types";
 import { revalidatePath } from "next/cache";
-import { hasImageFile, hasImageId, writeImage } from "@/utils/misc";
-import { getId } from "@/utils/db.server";
+import { hasImageFile, hasImageId } from "@/utils/misc";
+
 import { zip } from "lodash";
+
 
 export async function getUserName(userName: string) {
   try {
@@ -64,25 +64,6 @@ export async function getNote(noteId: string) {
   }
 }
 
-const updateNoteInDB = (noteId: string, title: string, content: string) => {
-  try {
-    const result = db.note.update({
-      where: { id: { equals: noteId } },
-      data: { title, content },
-    });
-
-    console.log(result);
-    return result;
-  } catch (error) {
-    console.log(error);
-    throw error;
-  }
-};
-
-export type UpdateNote = (
-  prevState: UserNameAndNotedId,
-  formData: FormData
-) => string | Promise<string | { error: string }>;
 
 const deleteNoteInDB = async (noteId: string) => {
   try {
@@ -134,16 +115,17 @@ export async function updateNote(
     altText: image[2],
   }));
 
-  const parsedFormData = {
+  const transFormedFormData = {
     title,
     content,
     images,
   };
 
   // Validate parsed form data as NoteEditorSchema type
-  const result = NoteEditorSchema.safeParse(parsedFormData);
+  const result = NoteEditorSchema.safeParse(transFormedFormData);
 
   if (!result.success) {
+    console.log("Field errors: ", result.error.flatten().fieldErrors);
     throw new Response("Error parsing form data", { status: 400 });
   }
 
@@ -153,10 +135,6 @@ export async function updateNote(
     images: newImages,
   } = result.data;
 
-  // 2. Update changed images by deleting and updating
-  // This would have image id and would have file
-  // To achieve this, get images with known ids and remove them from database
-  // Then add images with known ids to the database
   const newNoteImagesToUpdate = newImages
     ? await Promise.all(
         newImages.filter(hasImageId).map(async (image) => {
@@ -199,7 +177,7 @@ export async function updateNote(
     },
   });
 
-  // 2. For images in db that we have deleted on the client, we delete from db
+  // 2. For images in db that we have removed on the client, we delete from db
 
   await prisma.noteImage.deleteMany({
     where: {
@@ -211,17 +189,19 @@ export async function updateNote(
 
   // 3. Update images with newImagesToUpdate
   for (const image of newNoteImagesToUpdate) {
-    await prisma.noteImage.update({
-      where: { id: image.id },
-      data: {
-        altText: image.altText,
-        blob: image.blob,
-        contentType: image.contentType,
-      },
-    });
+    if (image) {
+      await prisma.noteImage.update({
+        where: { id: image.id },
+        data: {
+          altText: image.altText,
+          blob: image.blob,
+          contentType: image.contentType,
+        },
+      });
+    }
   }
 
-  // 3. Add new Images if exist
+  // 4. Add new Images if exist
   for (const image of newNoteImagesToCreate) {
     if (image) {
       await prisma.noteImage.create({
