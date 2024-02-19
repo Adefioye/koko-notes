@@ -54,11 +54,7 @@ const ImageFieldSetSchema = z.object({
   altText: z.string().optional(),
 });
 
-
-
-export type ImageFieldSet = z.infer<typeof ImageFieldSetSchema>;
-
-
+export type ImageFieldSet = z.infer<typeof ImageFieldSetSchema>
 
 export const NoteEditorSchema = z.object({
   title: z.string().min(TITLE_MIN_LENGTH).max(TITLE_MAX_LENGTH),

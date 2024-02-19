@@ -112,7 +112,7 @@ export async function updateNote(
   const images = zipImageFeatures.map((image) => ({
     id: image[0],
     file: image[1]!,
-    altText: image[2],
+    altText: image[2]!,
   }));
 
   const transFormedFormData = {
