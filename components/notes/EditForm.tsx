@@ -40,6 +40,7 @@ const EditForm = ({ initialState, note }: Props) => {
     title: note.title ?? "",
     content: note.content ?? "",
     images: note.images && note.images?.length > 0 ? note.images : [{}],
+    makeImageDirtyWhenSet: "", // Needed to ensure isDirty is set to true when image/alttext is changed
   };
 
   const form = useForm({
@@ -55,8 +56,9 @@ const EditForm = ({ initialState, note }: Props) => {
     name: "images",
   });
 
+  const { setValue } = form;
   const { isDirty, isValid, dirtyFields } = form.formState;
-  const disableEditButton = !(isDirty && isValid);
+  const disableEditButton = !isDirty || !isValid;
 
   console.log("Isdirty, isValid: ", isDirty, isValid, dirtyFields);
 
@@ -125,6 +127,7 @@ const EditForm = ({ initialState, note }: Props) => {
                         </span>
                       </button>
                       <ImageChooser
+                        setValue={setValue}
                         image={{
                           id: `images.${index}.id`,
                           altText: `images.${index}.altText`,

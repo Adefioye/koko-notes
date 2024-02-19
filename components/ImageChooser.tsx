@@ -1,15 +1,22 @@
 import { cn } from "@/utils/misc";
 import { Label } from "@radix-ui/react-label";
-import React, { useState } from "react";
+import React, { useState, useId } from "react";
 import { Textarea } from "./ui/textarea";
-import { useFormContext, useWatch } from "react-hook-form";
+import { UseFormSetValue, useFormContext, useWatch } from "react-hook-form";
 import Image from "next/image";
 
-const ImageChooser = ({
-  image,
-}: {
+type Props = {
+  setValue: UseFormSetValue<{
+    title: string;
+    content: string;
+    images: { altText: string | null; id: string }[] | {}[];
+    makeImageDirtyWhenSet: string; // Needed to ensure isDirty is set to true when image/alttext is changed
+  }>;
   image: { id: string; altText: string };
-}) => {
+};
+
+const ImageChooser = ({ image, setValue }: Props) => {
+  const randomString = useId();
   const { control } = useFormContext();
   const currentImageId = useWatch({ name: image.id, control });
   const currentAltText = useWatch({ name: image.altText, control });
@@ -61,11 +68,6 @@ const ImageChooser = ({
                 aria-label="Image"
                 className="absolute left-0 top-0 z-0 h-32 w-32 cursor-pointer opacity-0"
                 onChange={(event) => {
-                  console.log(
-                    "Files, values: ",
-                    event.target.files,
-                    event.target.value
-                  );
                   const file = event.target.files?.[0];
 
                   if (file) {
@@ -77,6 +79,10 @@ const ImageChooser = ({
                   } else {
                     setPreviewImage(null);
                   }
+
+                  setValue("makeImageDirtyWhenSet", randomString, {
+                    shouldDirty: true,
+                  });
                 }}
                 name="file"
                 type="file"
@@ -91,7 +97,13 @@ const ImageChooser = ({
             id="alt-text"
             name="altText"
             defaultValue={altText}
-            onChange={(e) => setAltText(e.currentTarget.value)}
+            onChange={(e) => {
+              setAltText(e.currentTarget.value);
+              
+              setValue("makeImageDirtyWhenSet", randomString, {
+                shouldDirty: true,
+              });
+            }}
           />
         </div>
       </div>

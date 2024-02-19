@@ -46,19 +46,20 @@ export type NoteEditProps = {
 const ImageFieldSetSchema = z.object({
   id: z.string().optional(),
   file: z
-  .instanceof(File)
-  .optional()
-  .refine((file) => {
-    return !file || file.size <= MAX_UPLOAD_SIZE;
-  }, "File size must be less than 3MB"),
+    .instanceof(File)
+    .optional()
+    .refine((file) => {
+      return !file || file.size <= MAX_UPLOAD_SIZE;
+    }, "File size must be less than 3MB"),
   altText: z.string().optional(),
 });
 
-export type ImageFieldSet = z.infer<typeof ImageFieldSetSchema>
+export type ImageFieldSet = z.infer<typeof ImageFieldSetSchema>;
 
 export const NoteEditorSchema = z.object({
   title: z.string().min(TITLE_MIN_LENGTH).max(TITLE_MAX_LENGTH),
   content: z.string().min(CONTENT_MIN_LENGTH).max(CONTENT_MAX_LENGTH),
+  makeImageDirtyWhenSet: z.string().optional(),
   images: z.array(ImageFieldSetSchema).max(5).optional(),
 });
 
