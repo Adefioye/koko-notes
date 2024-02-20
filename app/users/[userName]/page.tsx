@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: Props) {
   };
 }
 
-export default async function KodyProfileRoute({ params }: Props) {
+export default async function UserProfilePage({ params }: Props) {
   const { user } = await getUserName(params.userName);
   const userDisplayName = user?.name ?? user?.username;
   const userJoinedDisplay = user?.createdAt.toLocaleDateString();

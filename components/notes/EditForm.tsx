@@ -57,10 +57,9 @@ const EditForm = ({ initialState, note }: Props) => {
   });
 
   const { setValue } = form;
-  const { isDirty, isValid, dirtyFields } = form.formState;
+  const { isDirty, isValid } = form.formState;
   const disableEditButton = !isDirty || !isValid;
 
-  console.log("Isdirty, isValid: ", isDirty, isValid, dirtyFields);
 
   return (
     <Form {...form}>

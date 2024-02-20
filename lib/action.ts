@@ -8,7 +8,6 @@ import { hasImageFile, hasImageId } from "@/utils/misc";
 
 import { zip } from "lodash";
 
-
 export async function getUserName(userName: string) {
   try {
     const user = await prisma.user.findUnique({
@@ -63,7 +62,6 @@ export async function getNote(noteId: string) {
     throw error;
   }
 }
-
 
 const deleteNoteInDB = async (noteId: string) => {
   try {
@@ -168,54 +166,54 @@ export async function updateNote(
       )
     : [];
 
-  // 1. Update title and content based on noteId
-  await prisma.note.update({
-    where: { id: noteId },
-    data: {
-      title: newTitle,
-      content: newContent,
-    },
-  });
-
-  // 2. For images in db that we have removed on the client, we delete from db
-
-  await prisma.noteImage.deleteMany({
-    where: {
-      id: {
-        notIn: newNoteImagesToUpdate.map((image) => image?.id),
+  await prisma.$transaction(async ($prisma) => {
+    // 1. Update title and content based on noteId
+    await $prisma.note.update({
+      where: { id: noteId },
+      data: {
+        title: newTitle,
+        content: newContent,
       },
-    },
+    });
+    // 2. For images in db that we have removed on the client, we delete from db
+    await $prisma.noteImage.deleteMany({
+      where: {
+        id: {
+          notIn: newNoteImagesToUpdate.map((image) => image?.id),
+        },
+      },
+    });
+
+    // 3. Update images with newImagesToUpdate
+    for (const image of newNoteImagesToUpdate) {
+      if (image) {
+        await $prisma.noteImage.update({
+          where: { id: image.id },
+          data: {
+            altText: image.altText,
+            blob: image.blob,
+            contentType: image.contentType,
+          },
+        });
+      }
+    }
+
+    // 4. Add new Images if exist
+    for (const image of newNoteImagesToCreate) {
+      if (image) {
+        await $prisma.noteImage.create({
+          data: {
+            altText: image.altText,
+            blob: image.blob,
+            contentType: image.contentType,
+            noteId,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+        });
+      }
+    }
   });
-
-  // 3. Update images with newImagesToUpdate
-  for (const image of newNoteImagesToUpdate) {
-    if (image) {
-      await prisma.noteImage.update({
-        where: { id: image.id },
-        data: {
-          altText: image.altText,
-          blob: image.blob,
-          contentType: image.contentType,
-        },
-      });
-    }
-  }
-
-  // 4. Add new Images if exist
-  for (const image of newNoteImagesToCreate) {
-    if (image) {
-      await prisma.noteImage.create({
-        data: {
-          altText: image.altText,
-          blob: image.blob,
-          contentType: image.contentType,
-          noteId,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-      });
-    }
-  }
 
   revalidatePath(`/users/${userName}/notes/${noteId}`);
   return redirect(`/users/${userName}/notes/${noteId}`);
