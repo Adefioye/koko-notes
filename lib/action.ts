@@ -239,8 +239,14 @@ export async function searchUser(term: string) {
 		SELECT U.id, U.username, U.name, UI.id AS imageId
 		FROM User AS U
     LEFT JOIN UserImage AS UI ON U.id = UI.userId
-		WHERE U.username LIKE ${like}
-		OR U.name LIKE ${like}
+    LEFT JOIN 
+      (
+        SELECT ownerId, MAX(updatedAt) AS maxUpdatedAt
+        FROM Note
+        GROUP BY ownerId
+      ) AS N ON UI.userId = N.ownerId
+		WHERE U.username LIKE ${like} OR U.name LIKE ${like}
+    ORDER BY N.maxUpdatedAt DESC
 		LIMIT 50
   `;
 
