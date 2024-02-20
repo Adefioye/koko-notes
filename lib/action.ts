@@ -2,7 +2,11 @@
 
 import { prisma } from "./../utils/db.server";
 import { redirect } from "next/navigation";
-import { NoteEditorSchema, UserNameAndNotedId } from "@/utils/types";
+import {
+  NoteEditorSchema,
+  UserNameAndNotedId,
+  UserSearchResultsSchema,
+} from "@/utils/types";
 import { revalidatePath } from "next/cache";
 import { hasImageFile, hasImageId } from "@/utils/misc";
 
@@ -227,4 +231,23 @@ export async function signUp(prevState: any, formData: FormData) {
   if (nameConfirm) {
     throw new Response("Cannot submit sign up form", { status: 400 });
   }
+}
+
+export async function searchUser(term: string) {
+  const like = `%${term ?? ""}%`;
+  const users = await prisma.$queryRaw`
+		SELECT id, username, name
+		FROM User
+		WHERE username LIKE ${like}
+		OR name LIKE ${like}
+		LIMIT 50
+  `;
+
+  const results = UserSearchResultsSchema.safeParse(users);
+
+  if (!results.success) {
+    throw new Response("Error parsing users result", { status: 400 });
+  }
+
+  return { users: results.data };
 }

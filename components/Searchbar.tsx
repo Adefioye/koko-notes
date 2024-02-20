@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
@@ -23,7 +25,7 @@ const Searchbar = () => {
 
   return (
     <>
-      <Label htmlFor="search">Search</Label>
+      <Label htmlFor="search" className="sr-only">Search</Label>
       <Input
         type="text"
         placeholder="Search..."
