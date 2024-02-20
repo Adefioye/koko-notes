@@ -75,7 +75,8 @@ export type OwnerAndNotes = User & { notes: Note[] };
 const UserSearchResultSchema = z.object({
   id: z.string(),
   username: z.string(),
-  name: z.string().nullable()
-})
+  name: z.string().nullable(),
+  imageId: z.string().nullable(),
+});
 
-export const UserSearchResultsSchema = z.array(UserSearchResultSchema)
+export const UserSearchResultsSchema = z.array(UserSearchResultSchema);

@@ -31,9 +31,10 @@ const UsersPage = async ({
                   className="flex h-36 w-44 flex-col items-center justify-center rounded-lg bg-muted px-5 py-3"
                 >
                   <Image
+                    height={0}
+                    width={0}
                     alt={user.name ?? user.username}
-                    // @ts-expect-error
-                    src={getUserImgSrc(user.image?.id) ?? ""}
+                    src={getUserImgSrc(user.imageId)}
                     className="h-16 w-16 rounded-full"
                     priority
                   />

@@ -236,10 +236,11 @@ export async function signUp(prevState: any, formData: FormData) {
 export async function searchUser(term: string) {
   const like = `%${term ?? ""}%`;
   const users = await prisma.$queryRaw`
-		SELECT id, username, name
-		FROM User
-		WHERE username LIKE ${like}
-		OR name LIKE ${like}
+		SELECT U.id, U.username, U.name, UI.id AS imageId
+		FROM User AS U
+    LEFT JOIN UserImage AS UI ON U.id = UI.userId
+		WHERE U.username LIKE ${like}
+		OR U.name LIKE ${like}
 		LIMIT 50
   `;
 
