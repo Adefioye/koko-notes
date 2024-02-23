@@ -17,7 +17,7 @@ This application is motivated by Epic web dev course by Kent C Dodds. It was ori
 - Created `/users/[userName]/notes/[noteId]` for displaying common layout for all notes just like the route above and `title` and `content` of a note link. Subsequently, error handling page was created to display a generic UI when an unknown `noteId` was provided in the route.
 - Built functionalites for editing form and created several server actions for `fetching user`, `fetching owner and notes`, `fetching, updating and deleting notes`.
 - Add client and server side validation with zod and react-hook-form for note edit form
-- Add search for user and added index to increase user search speed by **850%**
+- Add search for user and added index to increase user search speed by **850%** for average of `15000 users`, and `250 notes per users`
 
 ###### PROBLEMS YET TO BE SOLVED
 
