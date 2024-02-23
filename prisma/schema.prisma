@@ -27,6 +27,9 @@ model Note {
   owner     User @relation(fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   ownerId   String 
   images    NoteImage[]
+
+  // Good practice to create index on the foreign column here
+  @@index([ownerId])
 }
 
 model UserImage {
@@ -38,6 +41,8 @@ model UserImage {
   updatedAt   DateTime
   user        User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userId      String @unique
+  // Good practice to create index on the foreign column here
+  @@index([userId])
 }
 
 model NoteImage {
@@ -48,5 +53,8 @@ model NoteImage {
   createdAt   DateTime 
   updatedAt   DateTime 
   note        Note @relation(fields: [noteId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  noteId      String
+  noteId      String 
+
+  // Good practice to create index on the foreign column here
+  @@index([noteId])
 }

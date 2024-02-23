@@ -13,7 +13,6 @@ const UsersPage = async ({
   const query = searchParams?.query ?? "";
   const { users } = await searchUser(query);
 
-  console.log("query, users: ", query, users);
   return (
     <div>
       <Searchbar />
