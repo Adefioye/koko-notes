@@ -30,6 +30,9 @@ model Note {
 
   // Good practice to create index on the foreign column here
   @@index([ownerId])
+
+  // This should speed up user search query (hopefully)
+  @@index([ownerId, updatedAt])
 }
 
 model UserImage {
