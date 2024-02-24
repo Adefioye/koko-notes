@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import React from "react";
+import ThemeToggle from "./ThemeToggle";
 
 const Footer = () => {
   return (
@@ -10,7 +11,10 @@ const Footer = () => {
         <div className="font-light">epic</div>
         <div className="font-bold">notes</div>
       </Link>
-      <p>Built with ♥️ by Kody</p>
+      <div className="flex  items-center space-x-2">
+        <p>Built with ♥️ by Kody</p>
+        <ThemeToggle />
+      </div>
     </footer>
   );
 };
