@@ -9,8 +9,10 @@ import {
 } from "@/utils/types";
 import { revalidatePath } from "next/cache";
 import { hasImageFile, hasImageId } from "@/utils/misc";
+import { z } from "zod";
 
 import { zip } from "lodash";
+import { action } from "./safeAction";
 
 export async function getUserName(userName: string) {
   try {
@@ -67,36 +69,38 @@ export async function getNote(noteId: string) {
   }
 }
 
-const deleteNoteInDB = async (noteId: string) => {
-  try {
-    const result = await prisma.note.delete({
-      where: { id: noteId },
-    });
-    return result;
-  } catch (error) {
-    console.log(error);
-    throw error;
-  }
-};
+const InputDeleteNote = z.object({
+  userName: z.string(),
+  noteId: z.string(),
+  intent: z.string(),
+});
 
-export async function deleteNote(
-  prevState: UserNameAndNotedId,
-  formData: FormData
-) {
-  const { userName, noteId } = prevState;
-  const intent = formData.get("intent");
-  console.log("Intent: ", intent);
+export async function deleteNoteHandler({
+  userName,
+  noteId,
+  intent,
+}: z.infer<typeof InputDeleteNote>) {
   switch (intent) {
     case "delete":
-      deleteNoteInDB(noteId);
-      break;
-    default:
-      throw new Response("Bad Request", { status: 400 });
-  }
+      try {
+        await prisma.note.delete({
+          where: { id: noteId },
+        });
 
-  revalidatePath(`/users/${userName}/notes`);
-  redirect(`/users/${userName}/notes`);
+        revalidatePath(`/users/${userName}/notes`);
+        return {
+          success: `Deleted note ${noteId} belonging to ${userName} succesfully`,
+        };
+      } catch (error) {
+        return { error: `Failed to delete ${noteId} belonging to ${userName}` };
+      }
+
+    default:
+      return { error: "Bad request, Try again!" };
+  }
 }
+
+export const deleteNote = action(InputDeleteNote, deleteNoteHandler);
 
 export async function updateNote(
   prevState: UserNameAndNotedId,

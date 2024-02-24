@@ -3,6 +3,7 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { Nunito_Sans } from "next/font/google";
 import { ThemeProvider } from "@/context/ThemeProvider";
+import { Toaster } from "@/components/ui/toaster";
 
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -45,6 +46,7 @@ export default function RootLayout({
           <div className="flex-1">{children}</div>
           <Footer />
         </ThemeProvider>
+        <Toaster />
       </body>
     </html>
   );
