@@ -13,6 +13,7 @@ import { z } from "zod";
 
 import { zip } from "lodash";
 import { action } from "./safeAction";
+import { PrismaClient } from "@prisma/client";
 
 export async function getUserName(userName: string) {
   try {
@@ -174,7 +175,7 @@ export async function updateNote(
       )
     : [];
 
-  await prisma.$transaction(async ($prisma) => {
+  await prisma.$transaction(async ($prisma: PrismaClient) => {
     // 1. Update title and content based on noteId
     await $prisma.note.update({
       where: { id: noteId },
@@ -239,20 +240,34 @@ export async function signUp(prevState: any, formData: FormData) {
 
 export async function searchUser(term: string) {
   const like = `%${term ?? ""}%`;
-  const users = await prisma.$queryRaw`
-		SELECT U.id, U.username, U.name, UI.id AS imageId
-		FROM User AS U
-    LEFT JOIN UserImage AS UI ON U.id = UI.userId
-    LEFT JOIN 
-      (
-        SELECT ownerId, MAX(updatedAt) AS maxUpdatedAt
-        FROM Note
-        GROUP BY ownerId
-      ) AS N ON UI.userId = N.ownerId
-		WHERE U.username LIKE ${like} OR U.name LIKE ${like}
-    ORDER BY N.maxUpdatedAt DESC
-		LIMIT 50
-  `;
+  // const users = await prisma.$queryRaw`
+	// 	SELECT U.id, U.username, U.name, UI.id AS imageId
+	// 	FROM User AS U
+  //   LEFT JOIN UserImage AS UI ON U.id = UI.userId
+  //   LEFT JOIN 
+  //     (
+  //       SELECT ownerId, MAX(updatedAt) AS maxUpdatedAt
+  //       FROM Note
+  //       GROUP BY ownerId
+  //     ) AS N ON UI.userId = N.ownerId
+	// 	WHERE U.username LIKE ${like} OR U.name LIKE ${like}
+  //   ORDER BY N.maxUpdatedAt DESC
+	// 	LIMIT 50
+  // `;
+
+  const users = await prisma.$queryRawUnsafe(`
+  SELECT U.id, U.username, U.name, UI.id AS "imageId"
+  FROM "User" AS U
+  LEFT JOIN "UserImage" AS UI ON U.id = UI."userId"
+  LEFT JOIN (
+    SELECT "ownerId", MAX("updatedAt") AS "maxUpdatedAt"
+    FROM "Note"
+    GROUP BY "ownerId"
+  ) AS N ON U.id = N."ownerId"
+  WHERE U.username ILIKE $1 OR U.name ILIKE $2
+  ORDER BY N."maxUpdatedAt" DESC
+  LIMIT 50
+`, like, like)
 
   const results = UserSearchResultsSchema.safeParse(users);
 
