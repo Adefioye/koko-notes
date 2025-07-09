@@ -1,4 +1,7 @@
 export default function Home() {
+  // inside your Next.js app (edge/function) add a quick debug:
+  console.log('DB_URL (length only):', process.env.DATABASE_URL);
+
   return (
     <div className="container text-center">
       <h1 className="my-8 text-h1">Koko Notes</h1>
