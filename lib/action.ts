@@ -107,7 +107,6 @@ export async function updateNote(
   prevState: UserNameAndNotedId,
   formData: FormData
 ) {
-  console.log("Form data: ", formData);
   const { noteId, userName } = prevState;
   const title = formData.get("title") as string;
   const content = formData.get("content") as string;
@@ -185,13 +184,17 @@ export async function updateNote(
       },
     });
     // 2. For images in db that we have removed on the client, we delete from db
+    const imagesBefore = await $prisma.noteImage.count({ where: { noteId } });
     await $prisma.noteImage.deleteMany({
       where: {
+        noteId,
         id: {
           notIn: newNoteImagesToUpdate.map((image) => image?.id),
         },
       },
     });
+    const imagesAfter = await $prisma.noteImage.count({ where: { noteId } });
+    console.log(`Deleted ${imagesBefore - imagesAfter} images`);
 
     // 3. Update images with newImagesToUpdate
     for (const image of newNoteImagesToUpdate) {
@@ -240,20 +243,6 @@ export async function signUp(prevState: any, formData: FormData) {
 
 export async function searchUser(term: string) {
   const like = `%${term ?? ""}%`;
-  // const users = await prisma.$queryRaw`
-	// 	SELECT U.id, U.username, U.name, UI.id AS imageId
-	// 	FROM User AS U
-  //   LEFT JOIN UserImage AS UI ON U.id = UI.userId
-  //   LEFT JOIN 
-  //     (
-  //       SELECT ownerId, MAX(updatedAt) AS maxUpdatedAt
-  //       FROM Note
-  //       GROUP BY ownerId
-  //     ) AS N ON UI.userId = N.ownerId
-	// 	WHERE U.username LIKE ${like} OR U.name LIKE ${like}
-  //   ORDER BY N.maxUpdatedAt DESC
-	// 	LIMIT 50
-  // `;
 
   const users = await prisma.$queryRawUnsafe(`
   SELECT U.id, U.username, U.name, UI.id AS "imageId"
