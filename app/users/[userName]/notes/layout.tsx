@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: Props) {
   return {
     title: `${displayName}'s note | Koko notes`,
     description: `Checkout ${
-      displayName + "'s" ?? "Unknown person"
+      displayName ?? "Unknown person" + "'s"
     } ${numOfNotes} ${notesText} on koko notes`,
   };
 }

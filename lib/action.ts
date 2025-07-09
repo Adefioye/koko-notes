@@ -174,7 +174,7 @@ export async function updateNote(
       )
     : [];
 
-  await prisma.$transaction(async ($prisma: PrismaClient) => {
+  await prisma.$transaction(async ($prisma) => {
     // 1. Update title and content based on noteId
     await $prisma.note.update({
       where: { id: noteId },
