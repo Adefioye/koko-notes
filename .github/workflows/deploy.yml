@@ -68,4 +68,7 @@ jobs:
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
           vercel-args: '--prod'
         env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          # Build-time env-vars
+          VERCEL_ARGS: >
+            --build-env DATABASE_URL=${{ secrets.DATABASE_URL }}
+            --env       DATABASE_URL=${{ secrets.DATABASE_URL }}
