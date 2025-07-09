@@ -5,6 +5,8 @@ import React from "react";
 import ThemeToggle from "./ThemeToggle";
 
 const Footer = () => {
+  // inside your Next.js app (edge/function) add a quick debug:
+  console.log('DB_URL (length only):', process.env.DATABASE_URL);
   return (
     <footer className="container mx-auto flex justify-between">
       <Link href="/">
