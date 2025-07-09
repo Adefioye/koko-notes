@@ -57,15 +57,21 @@ jobs:
     runs-on: ubuntu-latest
     if: success()
 
-    env: # Include environment secrets here
-      DATABASE_URL: ${{ secrets.DATABASE_URL }}
-
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: 'npm'
+
       - name: Install Vercel CLI
         run: npm install -g vercel
 
-      - name: Deploy to Vercel
-        run: vercel --prod --yes --token=${{ secrets.VERCEL_TOKEN }}
+      - name: Deploy to Vercel with env
+        run: |
+          vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+          vercel build --token=${{ secrets.VERCEL_TOKEN }} --env DATABASE_URL=${{ secrets.DATABASE_URL }}
+          vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
