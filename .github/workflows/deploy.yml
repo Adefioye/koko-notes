@@ -57,6 +57,9 @@ jobs:
     runs-on: ubuntu-latest
     if: success()
 
+    env: # Include environment secrets here
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
